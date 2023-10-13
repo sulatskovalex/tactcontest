@@ -9,12 +9,12 @@ import "@stdlib/deploy";
 
 message Add {
   queryId: Int as uint64;
-  number: Int as uint32;
+  number: Int as int32;
 }
 
 message Subtract {
   queryId: Int as uint64;
-  number: Int as uint32;
+  number: Int as int32;
 }
 
 contract Task1 with Deployable {
@@ -25,11 +25,14 @@ contract Task1 with Deployable {
     }
 
     receive(msg: Add) {
+        self.counter = (self.counter + msg.number);
     }
     
     receive(msg: Subtract) {
+        self.counter = (self.counter - msg.number);
     }
 
     get fun counter(): Int {
+        return self.counter;
     }
 }
