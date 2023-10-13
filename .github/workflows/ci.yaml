@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
+        
       - name: Filter and Archive code
         run: |
           mkdir -p contracts_filtered
@@ -32,7 +32,7 @@ jobs:
             echo "::set-output name=success::true"  # Set success to true
           else
             echo "Failed to submit TON Tact Challenge solution. Status code: $status_code"
-          
+            
             error_message=$(cat response.json | jq -r '.error')
             echo "Error message: $error_message"
             echo "::set-output name=success::false"  # Set success to false
