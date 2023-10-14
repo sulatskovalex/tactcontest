@@ -24,14 +24,14 @@ contract Task1 with Deployable {
       self.counter = 0;
     }
 
-//    receive(msg: Add) {
-//        self.counter = self.counter + msg.number;
-//    }
+/*    receive(msg: Add) {
+        self.counter = self.counter + msg.number;
+    }
     
-//    receive(msg: Subtract) {
-//        self.counter = self.counter - msg.number;
-//    }
-
+    receive(msg: Subtract) {
+        self.counter = self.counter - msg.number;
+    }
+*/
     receive(msg: Slice) {
         if(msg.bits() >= 32) {
             let op: Int = msg.loadUint(32);
@@ -39,13 +39,17 @@ contract Task1 with Deployable {
             let value: Int = msg.loadInt(32);
             if (op == 1900888912) {
                 self.counter = self.counter + value;
+                return;
             } else if(op == 1296507738) {
                 self.counter = self.counter - value;
+                return;
             }
         }
+        nativeThrow(130);
     }
 
     get fun counter(): Int {
         return self.counter;
     }
 }
+//736282391369063
