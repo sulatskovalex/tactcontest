@@ -30,13 +30,12 @@ contract Task2 with Deployable {
     send(SendParameters{
         to: msg.sender,
         value: 0,
-        mode: SendRemainingBalance + SendIgnoreErrors,
+        mode: SendRemainingBalance + SendDestroyIfZero,
         bounce: false
      });
   }
 
   receive(msg: Slice) {
-    let ctx: Context = context();
     send(SendParameters{
         to: self.admin,
         value: 0,
