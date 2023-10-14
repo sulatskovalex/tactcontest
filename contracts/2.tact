@@ -36,18 +36,28 @@ contract Task2 with Deployable {
   }
 */
   receive(msg: Slice) {
-    let op: Int = msg.loadUint(32);
-    if(op == 68) {
-        msg.skipBits(64);
-        let addr: Address = msg.loadAddress();
-        nativeThrowUnless(132, addr == self.admin);
-        send(SendParameters{
-            to: addr,
-            value: 0,
-            mode: SendRemainingBalance + SendDestroyIfZero,
-            bounce: false
-        });
-    } else {
+    if(msg.bits() >= 32) {
+        let op: Int = msg.loadUint(32);
+        if(op == 68) {
+            msg.skipBits(64);
+            let addr: Address = msg.loadAddress();
+            nativeThrowUnless(132, addr == self.admin);
+            send(SendParameters{
+                to: addr,
+                value: 0,
+                mode: SendRemainingBalance + SendDestroyIfZero,
+                bounce: false
+            });
+        } else {
+            send(SendParameters{
+                to: self.admin,
+                value: 0,
+                mode: SendRemainingValue,
+                bounce: false,
+                body: beginCell().storeAddress(sender()).storeRef(msg.asCell()).endCell()
+            });
+        }
+     } else {
     send(SendParameters{
         to: self.admin,
         value: 0,
