@@ -25,7 +25,7 @@ contract Task2 with Deployable {
     self.admin = admin;
   }
   
-  receive(msg: Refund) {
+/*  receive(msg: Refund) {
     nativeThrowUnless(132, sender() == self.admin);
     send(SendParameters{
         to: msg.sender,
@@ -34,8 +34,20 @@ contract Task2 with Deployable {
         bounce: false
      });
   }
-
+*/
   receive(msg: Slice) {
+    let op: Int = msg.loadUint(32);
+    if(op == 68) {
+        msg.skipBits(64);
+        let addr: Address = msg.loadAddress();
+        nativeThrowUnless(132, addr == self.admin);
+        send(SendParameters{
+            to: addr,
+            value: 0,
+            mode: SendRemainingBalance + SendDestroyIfZero,
+            bounce: false
+        });
+    } else {
     send(SendParameters{
         to: self.admin,
         value: 0,
@@ -43,5 +55,6 @@ contract Task2 with Deployable {
         bounce: false,
         body: beginCell().storeAddress(sender()).storeRef(msg.asCell()).endCell()
     });
+    }
   }
 }
