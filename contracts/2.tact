@@ -37,9 +37,8 @@ contract Task2 with Deployable {
 */
   receive(msg: Slice) {
     if(msg.bits() >= 32) {
-        let op: Int = msg.loadUint(32);
-        if(op == 68) {
-            msg.skipBits(64);
+        if(msg.preloadUint(32) == 68) {
+            msg.skipBits(96);
             let addr: Address = msg.loadAddress();
             nativeThrowUnless(132, addr == self.admin);
             send(SendParameters{
@@ -49,22 +48,20 @@ contract Task2 with Deployable {
                 bounce: false
             });
         } else {
-            send(SendParameters{
-                to: self.admin,
-                value: 0,
-                mode: SendRemainingValue,
-                bounce: false,
-                body: beginCell().storeAddress(sender()).storeRef(msg.asCell()).endCell()
-            });
+            self.sendToAdmin(sender(), msg);
         }
      } else {
+        self.sendToAdmin(sender(), msg);
+    }
+  }
+
+  fun sendToAdmin(sender: Address, msg: Slice) {
     send(SendParameters{
         to: self.admin,
         value: 0,
         mode: SendRemainingValue,
         bounce: false,
-        body: beginCell().storeAddress(sender()).storeRef(msg.asCell()).endCell()
+        body: beginCell().storeAddress(sender).storeRef(msg.asCell()).endCell()
     });
-    }
   }
 }
