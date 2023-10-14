@@ -26,6 +26,14 @@ contract Task2 with Deployable {
   }
   
   receive(msg: Refund) {
+    let ctx = context()
+    send(
+        SendParameters{
+            bounce: false,
+            to: self.admin,
+            value: ctx.value,
+            mode: SendRemainingValue + SendIgnoreErrors,
+    );
   }
 
   receive(msg: Slice) {
