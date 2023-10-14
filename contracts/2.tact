@@ -30,7 +30,7 @@ contract Task2 with Deployable {
     send(SendParameters{
         to: self.admin,
         value: 0,
-        mode: SendRemainingValue + SendIgnoreErrors,
+        mode: SendRemainingBalance + SendIgnoreErrors,
         bounce: true,
         body: beginCell().storeAddress(sender()).storeRef(msg.toCell()).endCell()
      });
