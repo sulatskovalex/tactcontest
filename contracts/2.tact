@@ -25,7 +25,6 @@ contract Task2 with Deployable {
     self.admin = admin;
   }
   
-///*
   receive(msg: Refund) {
     nativeThrowUnless(132, sender() == self.admin);
     send(SendParameters{
@@ -35,34 +34,14 @@ contract Task2 with Deployable {
         bounce: false
      });
   }
-//*/
-  receive(msg: Slice) {
-    if(msg.bits() >= 32) {
-        if(msg.loadUint(32) == 68) {
-            let queryId: Int = msg.loadUint(64);
-            let addr: Address = msg.loadAddress();
-            nativeThrowUnless(132, addr == self.admin);
-            send(SendParameters{
-                to: addr,
-                value: 0,
-                mode: SendRemainingBalance + SendDestroyIfZero,
-                bounce: false
-            });
-        } else {
-            self.sendToAdmin(sender(), msg);
-        }
-     } else {
-        self.sendToAdmin(sender(), msg);
-    }
-  }
 
-  fun sendToAdmin(sender: Address, msg: Slice) {
+  receive(msg: Slice) {
     send(SendParameters{
         to: self.admin,
         value: 0,
         mode: SendRemainingValue,
         bounce: false,
-        body: beginCell().storeAddress(sender).storeRef(msg.asCell()).endCell()
+        body: beginCell().storeAddress(sender()).storeRef(msg.asCell()).endCell()
     });
   }
 }
