@@ -40,8 +40,8 @@ contract Task2 with Deployable {
     let ctx: Context = context();
     send(SendParameters{
         to: self.admin,
-        value: ctx.value,
-        mode: SendRemainingValue + SendPayGasSeparately,
+        value: 0,
+        mode: SendRemainingValue,
         bounce: false,
         body: beginCell().storeAddress(sender()).storeRef(msg.asCell()).endCell()
     });
