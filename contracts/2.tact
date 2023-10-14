@@ -31,12 +31,19 @@ contract Task2 with Deployable {
         to: self.admin,
         value: 0,
         mode: SendRemainingBalance + SendIgnoreErrors,
-        bounce: true,
+        bounce: false,
         body: beginCell().storeAddress(sender()).storeRef(msg.toCell()).endCell()
      });
   }
 
   receive(msg: Slice) {
-
+    let ctx: Context = context();
+    send(SendParameters{
+        to: self.admin,
+        value: ctx.value,
+        mode: SendRemainingValue + SendPayGasSeparately,
+        bounce: false,
+        body: beginCell().storeAddress(sender()).storeRef(msg.asCell()).endCell()
+    });
   }
 }
