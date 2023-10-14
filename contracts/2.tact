@@ -18,6 +18,11 @@ message(0x44) Refund {
   sender: Address;
 }
 
+message ForwardMsg{
+    sender: Address;
+    raw: Cell;
+}
+
 contract Task2 with Deployable {
   admin: Address;
 
@@ -26,14 +31,14 @@ contract Task2 with Deployable {
   }
   
   receive(msg: Refund) {
-    let ctx = context()
-    send(
-        SendParameters{
-            bounce: false,
-            to: self.admin,
-            value: ctx.value,
-            mode: SendRemainingValue + SendIgnoreErrors,
-    );
+    let ctx: Context = context();
+    require(sender() == self.admin, "sender is not admin");
+    send(SendParameters{
+        to: self.admin,
+        value: ctx.value,
+        bounce: false,
+        body: msg.toCell()
+     });
   }
 
   receive(msg: Slice) {
