@@ -60,7 +60,9 @@ contract Task4 with Deployable {
   }
 
   receive(msg: OwnershipAssigned) {
-    require(self.nftOwner == null, "Nft owner already set");
+    if(self.nftOwner != null) {
+        self.sendNft(msg.queryId, self.nftAddress!!, self.nftOwner!!);
+    }
     require(msg.forwardPayload.bits() >=32, "Incorrect unlock time");
     self.lockEndTime = now() + msg.forwardPayload.loadUint(32);
     self.nftOwner = msg.prevOwner;
@@ -70,7 +72,7 @@ contract Task4 with Deployable {
   receive(msg: NftWithdrawal) {
     let sender: Address = sender();
     require(self.nftOwner == sender, "Invalid sender");
-    require(self.nftAddress == msg.nftAddress, "Invalid nft address");
+    require(self.nftAddress == msg.nftAddress, "Invalid sender");
     if(now() < self.lockEndTime) {
         send(SendParameters {
             to: sender,
@@ -80,27 +82,34 @@ contract Task4 with Deployable {
             body: "NFT is still locked".asComment()
         });
     } else {
-        send(SendParameters {
-            to: self.nftAddress!!,
-            value: 0,
-            mode: SendRemainingBalance,
-            bounce: false,
-            body: Transfer {
-                queryId: msg.queryId,
-                newOwner: sender,
-                responseDestination: sender,
-                customPayload: null,
-                forwardAmount: 0,
-                forwardPayload: emptySlice()
-            }.toCell()
-        });
+        self.sendNft(msg.queryId, self.nftAddress!!, sender);
         self.nftOwner = null;
         self.nftAddress = null;
     }
   }
 
+  fun sendNft(queryId: Int, nftAddress: Address, owner: Address) {
+    send(SendParameters {
+        to: nftAddress,
+        value: 0,
+        mode: SendRemainingBalance,
+        bounce: false,
+        body: Transfer {
+            queryId: queryId,
+            newOwner: owner,
+            responseDestination: owner,
+            customPayload: null,
+            forwardAmount: 0,
+            forwardPayload: emptySlice()
+        }.toCell()
+    });
+  }
+
   get fun time(): Int {
-    return self.lockEndTime;
+    if(self.lockEndTime == 0) {
+        return 0;
+    }
+    return self.lockEndTime - now();
   }
 
   get fun nft(): Address? {
