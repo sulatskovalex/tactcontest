@@ -61,9 +61,10 @@ contract Task4 with Deployable {
 
   receive(msg: OwnershipAssigned) {
     require(self.nftOwner == null, "Nft owner already set");
+    require(msg.forwardPayload.bits() >=32, "Incorrect unlock time");
+    self.lockEndTime = now() + msg.forwardPayload.loadUint(32);
     self.nftOwner = msg.prevOwner;
     self.nftAddress = sender();
-    self.lockEndTime = now() + msg.forwardPayload.loadUint(32);
   }
 
   receive(msg: NftWithdrawal) {
