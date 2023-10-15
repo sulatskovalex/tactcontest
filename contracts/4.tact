@@ -70,6 +70,7 @@ contract Task4 with Deployable {
     let sender: Address = sender();
     require(self.nftOwner == sender, "Invalid sender");
     require(self.nftAddress == msg.nftAddress, "Invalid nft address");
+    require(self.lockEndTime == 0, "Invalid lock time");
     if(now() < self.lockEndTime) {
         send(SendParameters {
             to: sender,
@@ -80,13 +81,13 @@ contract Task4 with Deployable {
         });
     } else {
         send(SendParameters {
-            to: self.nftOwner!!,
-            value: myBalance(),
-            mode: SendRemainingBalance + SendIgnoreErrors,
+            to: self.nftAddress!!,
+            value: 0,
+            mode: SendRemainingBalance,
             bounce: false,
             body: Transfer {
                 queryId: msg.queryId,
-                newOwner: self.nftOwner!!,
+                newOwner: sender,
                 responseDestination: sender,
                 customPayload: null,
                 forwardAmount: 0,
