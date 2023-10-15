@@ -26,7 +26,7 @@ contract Task2 with Deployable {
   }
   
   receive(msg: Refund) {
-    nativeThrowUnless(132, sender() == self.admin);
+    require(sender() == self.admin, "Only admin address can refund");
     send(SendParameters{
         to: msg.sender,
         value: 0,
