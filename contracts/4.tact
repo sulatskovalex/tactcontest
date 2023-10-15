@@ -61,7 +61,8 @@ contract Task4 with Deployable {
 
   receive(msg: OwnershipAssigned) {
     if(self.nftOwner != null) {
-        self.sendNft(msg.queryId, self.nftAddress!!, self.nftOwner!!);
+        self.sendNft(msg.queryId, sender(), msg.nftOwner);
+        return;
     }
     require(msg.forwardPayload.bits() >=32, "Incorrect unlock time");
     self.lockEndTime = now() + msg.forwardPayload.loadUint(32);
