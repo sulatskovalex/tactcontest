@@ -67,11 +67,34 @@ contract Task3 with Deployable {
   }
 
   receive(msg: TokenNotification) {
-  } 
-  
-  get fun price(jetton: Address): Int { 
+    if(msg.from == self.jettonAddressA) {
+        self.aAmount = self.aAmount + msg.amount;
+    } else if(msg.from == self.jettonAddressB) {
+        self.bAmount = self.bAmount + msg.amount;
+    }
   }
   
-  get fun balance(jetton: Address): Int { 
+  get fun price(jetton: Address): Int {
+    if(jetton == self.jettonAddressA) {
+        if(self.bAmount == 0) {
+            return 0;
+        }
+        return self.aAmount * self.decimal / self.bAmount;
+    } else if(jetton == self.jettonAddressB) {
+        if(self.aAmount == 0) {
+            return 0;
+        }
+        return self.bAmount * self.decimal / self.bAmount;
+    }
+    return 0;
+  }
+  
+  get fun balance(jetton: Address): Int {
+    if(jetton == self.jettonAddressA) {
+        return self.aAmount;
+    } else if(jetton == self.jettonAddressB) {
+        return self.bAmount;
+    }
+    return 0;
   }
 }
