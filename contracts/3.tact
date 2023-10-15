@@ -57,12 +57,12 @@ contract Task3 with Deployable {
   jettonAddressB: Address;
   decimal: Int;
 
-  init(admin: Address, newJettonAddressA: Address, newJettonAddressB: Address, aAmount: Int, bAmount: Int) {
+  init(admin: Address, newJettonAddressA: Address, newJettonAddressB: Address) {
     self.owner = admin;
     self.jettonAddressA = newJettonAddressA;
     self.jettonAddressB = newJettonAddressB;
-    self.aAmount = aAmount;
-    self.bAmount = bAmount;
+    self.aAmount = 0;
+    self.bAmount = 0;
     self.decimal = 1000000000;
   }
 
