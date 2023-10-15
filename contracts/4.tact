@@ -75,13 +75,13 @@ contract Task4 with Deployable {
         send(SendParameters {
             to: sender,
             value: 0,
-            mode: SendRemainingValue + SendIgnoreErrors,
+            mode: SendRemainingValue,
             bounce: false,
             body: "NFT is still locked".asComment()
         });
     } else {
         send(SendParameters {
-            to: sender,
+            to: self.nftAddress!!,
             value: 0,
             mode: SendRemainingBalance,
             bounce: false,
