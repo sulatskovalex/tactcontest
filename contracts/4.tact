@@ -79,7 +79,7 @@ contract Task4 with Deployable {
             to: sender,
             value: 0,
             mode: SendRemainingValue,
-            bounce: false,
+            bounce: true,
             body: "NFT is still locked".asComment()
         });
     } else {
@@ -94,7 +94,7 @@ contract Task4 with Deployable {
         to: nftAddress,
         value: 0,
         mode: SendRemainingBalance,
-        bounce: false,
+        bounce: true,
         body: Transfer {
             queryId: queryId,
             newOwner: owner,
