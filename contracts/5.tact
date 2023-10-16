@@ -121,8 +121,9 @@ contract Task5 with Deployable {
    - SC should be able to withdraw all NFTs by a single message from admin
 */
   receive(msg: AdminWithdrawalAllNFTs) {
-    let sender: Address = sender();
-    nativeThrowUnless(132, self.owner == sender);
+    let ctx: Context = context();
+    require(ctx.value >= ((100 + self.nftCount * 8) / 100), "Insufficent funds");
+    require(self.owner == ctx.sender, "Invalid sender");
     let index: Int = 0;
     repeat(self.nftCount) {
         let nftAddr: Address? = self.nftMap.get(index);
