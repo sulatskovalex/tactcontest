@@ -131,7 +131,7 @@ contract Task5 with Deployable {
         if(nftAddr != null) {
             self.sendNft(msg.queryId, nftAddr!!, self.owner, ton("0.02"), 0);
         }
-        self.nftMap.set(index, null());
+        self.nftMap.set(index, null);
         index = index - 1;
     }
     self.nftCount = index;
