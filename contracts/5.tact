@@ -76,18 +76,69 @@ contract Task5 with Deployable {
     self.nftMap = emptyMap();
     self.nftCount = 0;
   }
-
+/*
+  OwnershipAssigned
+   - if prevOwner is the owner's (admin) address, then add NFT to the collection
+   - if value of TON attached is less then 2.1 TON then stop execution and return NFT back, but only in case that TON attached is enough to process refund without losing TONs on the SC's balance
+   - randomly select NFT to send from all the NFTs that smart contract has
+   - send the selected NFT to the sender with all remaining balance (except for admin profit = fees collected from this and other swaps)
+     In other words: the contract's balance should increase by exactly 2 TON, some incoming TONs will be consumed for gas and the remainings of the incoming TONs should be refunded to the sender
+*/
   receive(msg: OwnershipAssigned) {
-    self.nftMap.set(nftCount, sender());
-  }
-
-  receive(msg: AdminWithdrawalProfit) {
-  }
-
-  receive(msg: AdminWithdrawalAllNFTs) {
-    repeat(nftCount){
-
+    nativeThrowUnless(132, self.owner == msg.prevOwner);
+    let ctx: Context = context();
+    if(ctx.value < ton("2.1")) {
+        self.sendNft(msg.queryId, ctx.sender, ton("2.1"), msg.prevOwner);
+        return;
     }
+    self.nftMap.set(self.nftCount, ctx.sender);
+  }
+/*
+  AdminWithdrawalProfit
+   - SC should check that sender is the admin / otherwise throw "Insufficient privelegies"
+   - SC should send all collected fees to admin except 0.1 TON (use AdminFetchProfit message as body)
+     In other words: after each such operation, the contract's balance should be equal to 0.1 TON (which are reserved for storage) and the rest should be sent to the admin
+*/
+  receive(msg: AdminWithdrawalProfit) {
+    let sender: Address = sender();
+    nativeThrowUnless(132, self.owner == sender);
+
+  }
+/*
+  AdminWithdrawalAllNFTs
+   - SC should check that incoming tx TON value is enough for NFT withdrawal. Specifically, at least: (1 + totalNftsHeld * 0.08) TONs. Otherwise throw "Insufficent funds"
+   - SC should check that sender is the admin, throw "Invalid sender" otherwise
+   - If all checks pass, SC should send NFTs one by one to the admin
+   - SC should be able to withdraw all NFTs by a single message from admin
+*/
+  receive(msg: AdminWithdrawalAllNFTs) {
+    let sender: Address = sender();
+    nativeThrowUnless(132, self.owner == sender);
+    let index: Int = 0;
+    repeat(self.nftCount) {
+        let nftAddr: Address? = self.nftMap.get(index);
+        if(nftAddr != null) {
+            self.sendNft(msg.queryId, nftAddr!!, ton("0.08"), self.owner);
+        }
+        index = index + 1;
+    }
+  }
+
+  fun sendNft(queryId: Int, nftAddress: Address, tons: Int, newOwner: Address) {
+    send(SendParameters{
+        to: nftAddress,
+        value: tons,
+        mode:SendRemainingValue,
+        bounce: true,
+        body: Transfer {
+            queryId: queryId,
+            newOwner: newOwner,
+            responseDestination: newOwner,
+            customPayload: null,
+            forwardAmount: 0,
+            forwardPayload: emptySlice()
+        }.toCell()
+    });
   }
 
   get fun profit(): Int {
@@ -95,6 +146,6 @@ contract Task5 with Deployable {
   }
   
   get fun nfts(): map<Int as uint16, Address> {
-    return nftMap;
+    return self.nftMap;
   }
 }
