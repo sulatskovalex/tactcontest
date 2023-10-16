@@ -141,9 +141,7 @@ contract Task5 with Deployable {
         value: 0,
         mode: SendRemainingBalance,
         bounce: true,
-        body: AdminFetchProfit{
-            queryId: msg.queryId
-        }.toCell()
+        body: AdminFetchProfit{ queryId: msg.queryId }.toCell()
     });
   }
 /*
@@ -169,6 +167,7 @@ contract Task5 with Deployable {
             forwardPayload: emptySlice()
         }.toCell();
     let index: Int = min(self.nftCount, 100);
+    self.nftCount = self.nftCount - index;
     repeat(index) {
         let nft: Address? = self.nftMap.get(index);
         if(nft != null) {
@@ -183,11 +182,9 @@ contract Task5 with Deployable {
         self.nftMap.set(index, null);
         index = index - 1;
     }
-    if(self.nftCount == index) {
+    if(self.nftCount == 0) {
         self.nftMap = emptyMap();
-        self.nftCount = 0;
     } else {
-        self.nftCount = self.nftCount - index;
         send(SendParameters{
             to: myAddress,
             value: 0,
