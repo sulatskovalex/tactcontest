@@ -166,14 +166,14 @@ contract Task5 with Deployable {
             forwardAmount: 0,
             forwardPayload: emptySlice()
         }.toCell();
-    let index: Int = min(self.nftCount, 100);
+    let index: Int = min(self.nftCount - 1, 99);
     self.nftCount = self.nftCount - index;
     repeat(index) {
         let nft: Address? = self.nftMap.get(index);
         if(nft != null) {
             send(SendParameters{
                 to: nft!!,
-                value: ton("0.08"),
+                value: ton("0.02"),
                 body: body
             });
         }
