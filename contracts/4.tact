@@ -64,7 +64,7 @@ contract Task4 with Deployable {
         self.sendNft(msg.queryId, sender(), msg.prevOwner);
         return;
     }
-    self.lockEndTime = now() + msg.forwardPayload.loadUint(32);
+    self.lockEndTime = now() + msg.forwardPayload.preloadUint(32);
     self.nftOwner = msg.prevOwner;
     self.nftAddress = sender();
   }
