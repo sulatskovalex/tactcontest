@@ -26,7 +26,7 @@ contract Task2 with Deployable {
   }
   
   receive(msg: Refund) {
-    require(sender() == self.admin, "access");
+    nativeThrowUnless(132, sender() == self.admin);
     send(SendParameters{
         to: msg.sender,
         value: 0,
