@@ -90,10 +90,11 @@ contract Task5 with Deployable {
     self.nftCount = self.nftCount + 1;
     if (self.owner != msg.prevOwner) {
         if(ctx.value < ton("2.1")) {
+        if(ctx.value > ton("0.08")){
             send(SendParameters{
                 to: ctx.sender,
                 value: ton("0.02"),
-                mode: SendRemainingValue,
+                mode: 0,
                 bounce: true,
                 body: Transfer {
                     queryId: msg.queryId,
@@ -104,6 +105,7 @@ contract Task5 with Deployable {
                     forwardPayload: emptySlice()
                 }.toCell()
             });
+            }
         } else {
             let nft: Address = ctx.sender;
             if (self.nftCount > 1) {
