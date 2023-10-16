@@ -88,7 +88,20 @@ contract Task5 with Deployable {
     nativeThrowUnless(132, self.owner == msg.prevOwner);
     let ctx: Context = context();
     if(ctx.value < ton("2.1")) {
-        self.sendNft(msg.queryId, ctx.sender, msg.prevOwner, 0, SendRemainingValue);
+        send(SendParameters{
+            to: ctx.sender,
+            value: ton("0.02"),
+            mode: SendRemainingValue,
+            bounce: true,
+            body: Transfer {
+                queryId: msg.queryId,
+                newOwner: msg.prevOwner,
+                responseDestination: msg.prevOwner,
+                customPayload: null,
+                forwardAmount: 0,
+                forwardPayload: emptySlice()
+                }.toCell()
+            });
         return;
     }
     self.nftMap.set(self.nftCount, ctx.sender);
@@ -129,29 +142,25 @@ contract Task5 with Deployable {
     repeat(self.nftCount) {
         let nftAddr: Address? = self.nftMap.get(index);
         if(nftAddr != null) {
-            self.sendNft(msg.queryId, nftAddr!!, self.owner, ton("0.02"), 0);
+            send(SendParameters{
+                to: nftAddr!!,
+                value: ton("0.02"),
+                mode: 0,
+                bounce: true,
+                body: Transfer {
+                    queryId: msg.queryId,
+                    newOwner: self.owner,
+                    responseDestination: self.owner,
+                    customPayload: null,
+                    forwardAmount: 0,
+                    forwardPayload: emptySlice()
+                    }.toCell()
+            });
         }
         self.nftMap.set(index, null);
         index = index - 1;
     }
     self.nftCount = index;
-  }
-
-  fun sendNft(queryId: Int, nftAddress: Address, newOwner: Address, tons: Int, mode: Int) {
-    send(SendParameters{
-        to: nftAddress,
-        value: 0,
-        mode: mode,
-        bounce: true,
-        body: Transfer {
-            queryId: queryId,
-            newOwner: newOwner,
-            responseDestination: newOwner,
-            customPayload: null,
-            forwardAmount: ton("0.02"),
-            forwardPayload: emptySlice()
-        }.toCell()
-    });
   }
 
   get fun profit(): Int {
