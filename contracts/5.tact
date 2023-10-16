@@ -88,45 +88,46 @@ contract Task5 with Deployable {
     let ctx: Context = context();
     self.nftMap.set(self.nftCount, ctx.sender);
     self.nftCount = self.nftCount + 1;
-    if (self.owner != msg.prevOwner) {
-        if(ctx.value < ton("2.1")) {
-        if(ctx.value > ton("0.08")){
-            send(SendParameters{
-                to: ctx.sender,
-                value: ton("0.02"),
-                mode: 0,
-                bounce: true,
-                body: Transfer {
-                    queryId: msg.queryId,
-                    newOwner: msg.prevOwner,
-                    responseDestination: msg.prevOwner,
-                    customPayload: null,
-                    forwardAmount: 0,
-                    forwardPayload: emptySlice()
-                }.toCell()
-            });
-            }
-        } else {
-            let nft: Address = ctx.sender;
-            if (self.nftCount > 1) {
-                nft = self.nftMap.get(random(0, self.nftCount - 1))!!;
-            }
-            send(SendParameters{
-                to: nft,
-                value: ton("0.02"),
-                mode: 0,
-                bounce: true,
-                body: Transfer {
-                    queryId: msg.queryId,
-                    newOwner: msg.prevOwner,
-                    responseDestination: msg.prevOwner,
-                    customPayload: null,
-                    forwardAmount: 0,
-                    forwardPayload: emptySlice()
-                }.toCell()
-            });
-            }
+    if(self.owner == msg.prevOwner) {
+        return;
     }
+    if(ctx.value < ton("0.08")){
+        return;
+    }
+    if(ctx.value < ton("2.1")) {
+        send(SendParameters{
+            to: ctx.sender,
+            value: 0,
+            mode: SendRemainingValue,
+            bounce: true,
+            body: Transfer {
+                queryId: msg.queryId,
+                newOwner: msg.prevOwner,
+                responseDestination: msg.prevOwner,
+                customPayload: null,
+                forwardAmount: 0,
+                forwardPayload: emptySlice()
+                }.toCell()
+        });
+        return;
+    }
+
+    let nft: Address = ctx.sender;
+    if (self.nftCount > 1) {
+        nft = self.nftMap.get(random(0, self.nftCount - 1))!!;
+    }
+    send(SendParameters{
+        to: nft,
+        value: ctx.value - ton("2"),
+        body: Transfer {
+            queryId: msg.queryId,
+            newOwner: msg.prevOwner,
+            responseDestination: msg.prevOwner,
+            customPayload: null,
+            forwardAmount: 0,
+            forwardPayload: emptySlice()
+        }.toCell()
+    });
   }
 /*
   AdminWithdrawalProfit
@@ -175,9 +176,7 @@ contract Task5 with Deployable {
         if(nft != null) {
             send(SendParameters{
                 to: nft!!,
-                value: 0,
-                mode: SendRemainingValue,
-                bounce: true,
+                value: ton("0.08"),
                 body: body
             });
         }
