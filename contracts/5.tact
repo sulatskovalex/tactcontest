@@ -88,7 +88,7 @@ contract Task5 with Deployable {
     nativeThrowUnless(132, self.owner == msg.prevOwner);
     let ctx: Context = context();
     if(ctx.value < 2100000000) {
-        self.sendNft(msg.queryId, ctx.sender, ton(0.02), msg.prevOwner, 0);
+        self.sendNft(msg.queryId, ctx.sender, msg.prevOwner);
         return;
     }
     self.nftMap.set(self.nftCount, ctx.sender);
@@ -129,17 +129,17 @@ contract Task5 with Deployable {
     repeat(self.nftCount) {
         let nftAddr: Address? = self.nftMap.get(index);
         if(nftAddr != null) {
-            self.sendNft(msg.queryId, nftAddr!!, ton(0.02), self.owner, 0);
+            self.sendNft(msg.queryId, nftAddr!!, self.owner);
         }
         index = index + 1;
     }
   }
 
-  fun sendNft(queryId: Int, nftAddress: Address, tons: Int, newOwner: Address, mode: Int) {
+  fun sendNft(queryId: Int, nftAddress: Address, newOwner: Address) {
     send(SendParameters{
         to: nftAddress,
-        value: tons,
-        mode: mode,
+        value: ton("0.02"),
+        mode: 0,
         bounce: true,
         body: Transfer {
             queryId: queryId,
