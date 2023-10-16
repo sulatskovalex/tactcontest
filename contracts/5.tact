@@ -136,31 +136,47 @@ contract Task5 with Deployable {
 */
   receive(msg: AdminWithdrawalAllNFTs) {
     let ctx: Context = context();
-    require(ctx.value >= (ton("1") + self.nftCount * ton("0.08")), "Insufficent funds");
-    require(self.owner == ctx.sender, "Invalid sender");
-    let index: Int = self.nftCount;
-    repeat(self.nftCount) {
-        let nftAddr: Address? = self.nftMap.get(index);
-        if(nftAddr != null) {
+    let myAddress: Address = myAddress();
+    if (ctx.sender != myAddress) {
+        require(ctx.value >= (ton("1") + self.nftCount * ton("0.08")), "Insufficent funds");
+        require(self.owner == ctx.sender, "Invalid sender");
+    }
+    let body: Cell = Transfer {
+            queryId: msg.queryId,
+            newOwner: self.owner,
+            responseDestination: self.owner,
+            customPayload: null,
+            forwardAmount: 0,
+            forwardPayload: emptySlice()
+        }.toCell();
+    let index: Int = min(self.nftCount, 100);
+    repeat(index) {
+        let nft: Address? = self.nftMap.get(index);
+        if(nft != null) {
             send(SendParameters{
-                to: nftAddr!!,
+                to: nft!!,
                 value: ton("0.02"),
                 mode: 0,
                 bounce: true,
-                body: Transfer {
-                    queryId: msg.queryId,
-                    newOwner: self.owner,
-                    responseDestination: self.owner,
-                    customPayload: null,
-                    forwardAmount: 0,
-                    forwardPayload: emptySlice()
-                    }.toCell()
+                body: body
             });
         }
         self.nftMap.set(index, null);
         index = index - 1;
     }
-    self.nftCount = index;
+    if(self.nftCount == index) {
+        self.nftMap = emptyMap();
+        self.nftCount = 0;
+    } else {
+        self.nftCount = self.nftCount - index;
+        send(SendParameters{
+            to: myAddress,
+            value: 0,
+            mode: SendRemainingBalance,
+            bounce: true,
+            body: msg.toCell()
+        });
+    }
   }
 
   get fun profit(): Int {
