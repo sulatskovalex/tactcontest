@@ -64,7 +64,6 @@ contract Task4 with Deployable {
         self.sendNft(msg.queryId, sender(), msg.prevOwner);
         return;
     }
-//    require(msg.forwardPayload.bits() >= 32, "Incorrect unlock time");
     self.lockEndTime = now() + msg.forwardPayload.loadUint(32);
     self.nftOwner = msg.prevOwner;
     self.nftAddress = sender();
@@ -72,9 +71,7 @@ contract Task4 with Deployable {
 
   receive(msg: NftWithdrawal) {
     let sender: Address = sender();
-    if(self.nftOwner != sender) {
-        nativeThrow(132);
-    }
+    nativeThrowUnless(132, self.nftOwner == sender);
     if(now() < self.lockEndTime) {
         send(SendParameters {
             to: sender,
@@ -83,14 +80,12 @@ contract Task4 with Deployable {
             bounce: true,
             body: "NFT is still locked".asComment()
         });
-    } else {
-        if(self.nftAddress != msg.nftAddress) {
-            nativeThrow(132);
-        }
-        self.sendNft(msg.queryId, self.nftAddress!!, sender);
-        self.nftOwner = null;
-        self.nftAddress = null;
+        return;
     }
+    nativeThrowUnless(132, self.nftAddress == msg.nftAddress);
+    self.sendNft(msg.queryId, self.nftAddress!!, sender);
+    self.nftOwner = null;
+    self.nftAddress = null;
   }
 
   fun sendNft(queryId: Int, nftAddress: Address, owner: Address) {
