@@ -187,7 +187,8 @@ contract Task5 with Deployable {
         send(SendParameters{
             to: self.owner,
             value: 0,
-            mode: SendRemainingBalance,
+            mode: SendRemainingBalance
+        });
     } else {
         send(SendParameters{
             to: myAddress,
