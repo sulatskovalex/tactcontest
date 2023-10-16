@@ -184,6 +184,10 @@ contract Task5 with Deployable {
     }
     if(self.nftCount == 0) {
         self.nftMap = emptyMap();
+        send(SendParameters{
+            to: self.owner,
+            value: 0,
+            mode: SendRemainingBalance,
     } else {
         send(SendParameters{
             to: myAddress,
