@@ -80,11 +80,12 @@ contract Task3 with Deployable {
             return 0;
         }
         return self.aAmount * self.decimal / self.bAmount;
-    } else if(jetton == self.jettonAddressB) {
+    }
+    if(jetton == self.jettonAddressB) {
         if(self.aAmount == 0) {
             return 0;
         }
-        return self.bAmount * self.decimal / self.bAmount;
+        return self.bAmount * self.decimal / self.aAmount;
     }
     return 0;
   }
@@ -92,7 +93,8 @@ contract Task3 with Deployable {
   get fun balance(jetton: Address): Int {
     if(jetton == self.jettonAddressA) {
         return self.aAmount * self.decimal;
-    } else if(jetton == self.jettonAddressB) {
+    }
+    if(jetton == self.jettonAddressB) {
         return self.bAmount * self.decimal;
     }
     return 0;

@@ -102,7 +102,16 @@ contract Task5 with Deployable {
   receive(msg: AdminWithdrawalProfit) {
     let sender: Address = sender();
     nativeThrowUnless(132, self.owner == sender);
-
+    nativeReserve(ton("0.1"), 0);
+    send(SendParameters{
+        to: self.owner,
+        value: 0,
+        mode: SendRemainingBalance,
+        bounce: true,
+        body: AdminFetchProfit{
+            queryId: msg.queryId
+        }.toCell()
+    });
   }
 /*
   AdminWithdrawalAllNFTs
@@ -128,7 +137,7 @@ contract Task5 with Deployable {
     send(SendParameters{
         to: nftAddress,
         value: tons,
-        mode:SendRemainingValue,
+        mode: SendRemainingValue,
         bounce: true,
         body: Transfer {
             queryId: queryId,
