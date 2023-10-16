@@ -41,7 +41,7 @@ contract Task2 with Deployable {
         value: 0,
         mode: SendRemainingValue,
         bounce: false,
-        body: sender().asSlice().storeRef(msg.asCell()).endCell()
+        body: beginCell().storeSlice(sender().asSlice()).storeRef(msg.asCell()).endCell()
     });
   }
 }
