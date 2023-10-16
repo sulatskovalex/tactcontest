@@ -93,8 +93,8 @@ contract Task5 with Deployable {
         if(ctx.value > ton("0.08")){
             send(SendParameters{
                 to: ctx.sender,
-                value: ctx.value - ton("2.02"),
-                mode: 0,
+                value: ton("0.02"),
+                mode: SendRemainingValue,
                 bounce: true,
                 body: Transfer {
                     queryId: msg.queryId,
@@ -113,8 +113,8 @@ contract Task5 with Deployable {
             }
             send(SendParameters{
                 to: nft,
-                value: ton("0.02"),
-                mode: SendRemainingValue,
+                value: ctx.value - ton("2.08"),
+                mode: 0,
                 bounce: true,
                 body: Transfer {
                     queryId: msg.queryId,
