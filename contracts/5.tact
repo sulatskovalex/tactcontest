@@ -173,7 +173,8 @@ contract Task5 with Deployable {
         if(nft != null) {
             send(SendParameters{
                 to: nft!!,
-                value: ton("0.02"),
+                value: ton("0.08"),
+                mode: SendRemainingValue,
                 body: body
             });
         }
