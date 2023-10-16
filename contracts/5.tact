@@ -93,7 +93,7 @@ contract Task5 with Deployable {
         if(ctx.value > ton("0.08")){
             send(SendParameters{
                 to: ctx.sender,
-                value: ton("0.02"),
+                value: ctx.value - ton("2.02"),
                 mode: 0,
                 bounce: true,
                 body: Transfer {
