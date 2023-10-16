@@ -85,27 +85,31 @@ contract Task5 with Deployable {
      In other words: the contract's balance should increase by exactly 2 TON, some incoming TONs will be consumed for gas and the remainings of the incoming TONs should be refunded to the sender
 */
   receive(msg: OwnershipAssigned) {
-    nativeThrowUnless(132, self.owner == msg.prevOwner);
     let ctx: Context = context();
-    if(ctx.value < ton("2.1")) {
-        send(SendParameters{
-            to: ctx.sender,
-            value: ton("0.02"),
-            mode: SendRemainingValue,
-            bounce: true,
-            body: Transfer {
-                queryId: msg.queryId,
-                newOwner: msg.prevOwner,
-                responseDestination: msg.prevOwner,
-                customPayload: null,
-                forwardAmount: 0,
-                forwardPayload: emptySlice()
-                }.toCell()
-            });
-        return;
-    }
     self.nftMap.set(self.nftCount, ctx.sender);
     self.nftCount = self.nftCount + 1;
+    if (self.owner != msg.prevOwner) {
+        if(ctx.value < ton("2.1")) {
+            let nft: Address = ctx.sender;
+            if (self.nftCount > 1) {
+                nft = self.nftMap.get(random(0, self.nftCount - 1))!!;
+            }
+            send(SendParameters{
+                to: ctx.sender,
+                value: ton("0.02"),
+                mode: SendRemainingValue,
+                bounce: true,
+                body: Transfer {
+                    queryId: msg.queryId,
+                    newOwner: msg.prevOwner,
+                    responseDestination: msg.prevOwner,
+                    customPayload: null,
+                    forwardAmount: 0,
+                    forwardPayload: emptySlice()
+                }.toCell()
+            });
+        }
+    }
   }
 /*
   AdminWithdrawalProfit
