@@ -87,8 +87,8 @@ contract Task5 with Deployable {
   receive(msg: OwnershipAssigned) {
     nativeThrowUnless(132, self.owner == msg.prevOwner);
     let ctx: Context = context();
-    if(ctx.value < 2100000000) {
-        self.sendNft(msg.queryId, ctx.sender, msg.prevOwner);
+    if(ctx.value < ton("2.1")) {
+        self.sendNft(msg.queryId, ctx.sender, msg.prevOwner, 0, SendRemainingValue);
         return;
     }
     self.nftMap.set(self.nftCount, ctx.sender);
@@ -123,30 +123,32 @@ contract Task5 with Deployable {
 */
   receive(msg: AdminWithdrawalAllNFTs) {
     let ctx: Context = context();
-    require(ctx.value >= ((100 + self.nftCount * 8) / 100), "Insufficent funds");
+    require(ctx.value <= (ton("1") + self.nftCount * ton("0.08")), "Insufficent funds");
     require(self.owner == ctx.sender, "Invalid sender");
-    let index: Int = 0;
+    let index: Int = self.nftCount;
     repeat(self.nftCount) {
         let nftAddr: Address? = self.nftMap.get(index);
         if(nftAddr != null) {
-            self.sendNft(msg.queryId, nftAddr!!, self.owner);
+            self.sendNft(msg.queryId, nftAddr!!, self.owner, ton("0.02"), 0);
         }
-        index = index + 1;
+        self.nftMap.set(index, null());
+        index = index - 1;
     }
+    self.nftCount = index;
   }
 
-  fun sendNft(queryId: Int, nftAddress: Address, newOwner: Address) {
+  fun sendNft(queryId: Int, nftAddress: Address, newOwner: Address, tons: Int, mode: Int) {
     send(SendParameters{
         to: nftAddress,
-        value: ton("0.02"),
-        mode: 0,
+        value: 0,
+        mode: mode,
         bounce: true,
         body: Transfer {
             queryId: queryId,
             newOwner: newOwner,
             responseDestination: newOwner,
             customPayload: null,
-            forwardAmount: 0,
+            forwardAmount: ton("0.02"),
             forwardPayload: emptySlice()
         }.toCell()
     });
