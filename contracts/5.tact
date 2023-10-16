@@ -67,17 +67,18 @@ message(0x5fcc3d14) Transfer {
 contract Task5 with Deployable {
   seed: Int as uint128;
   owner: Address;
-  nftMap: map<Int as uint16, Address>
+  nftMap: map<Int as uint16, Address>;
   nftCount: Int as uint16;
   
   init(seed: Int, owner: Address) {
     self.owner = owner;
     self.seed = seed; // needed to deploy multiple smart contracts copies from one admin address
-    self.nftMap = null;
+    self.nftMap = emptyMap();
     self.nftCount = 0;
   }
 
   receive(msg: OwnershipAssigned) {
+    self.nftMap.set(nftCount, sender());
   }
 
   receive(msg: AdminWithdrawalProfit) {

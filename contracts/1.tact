@@ -9,16 +9,16 @@ import "@stdlib/deploy";
 
 message Add {
   queryId: Int as uint64;
-  number: Int as int16;
+  number: Int as int32;
 }
 
 message Subtract {
   queryId: Int as uint64;
-  number: Int as int16;
+  number: Int as int32;
 }
 
 contract Task1 with Deployable {
-    counter: Int as int16;
+    counter: Int as int32;
 
     init() {
       self.counter = 0;
