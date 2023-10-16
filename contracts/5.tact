@@ -136,13 +136,12 @@ contract Task5 with Deployable {
      In other words: after each such operation, the contract's balance should be equal to 0.1 TON (which are reserved for storage) and the rest should be sent to the admin
 */
   receive(msg: AdminWithdrawalProfit) {
-    let sender: Address = sender();
-    require(self.owner == sender, "Insufficient privelegies");
-//    nativeThrowUnless(132, myBalance > ton("0.1")
-    nativeReserve(ton("0.1"), 0);
+    require(self.owner == sender(), "Insufficient privelegies");
+    let diff: Int = myBalance() - ton("0.1");
+    nativeThrowUnless(132, diff > ton("0"));
     send(SendParameters{
         to: self.owner,
-        value: 0,
+        value: diff,
         mode: SendRemainingBalance,
         body: AdminFetchProfit{ queryId: msg.queryId }.toCell()
     });
