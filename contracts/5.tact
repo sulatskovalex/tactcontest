@@ -88,10 +88,11 @@ contract Task5 with Deployable {
     nativeThrowUnless(132, self.owner == msg.prevOwner);
     let ctx: Context = context();
     if(ctx.value < ton("2.1")) {
-        self.sendNft(msg.queryId, ctx.sender, ton("2.1"), msg.prevOwner);
+        self.sendNft(msg.queryId, ctx.sender, 0, msg.prevOwner, SendRemainingValue);
         return;
     }
     self.nftMap.set(self.nftCount, ctx.sender);
+    self.nftCount = self.nftCount + 1;
   }
 /*
   AdminWithdrawalProfit
@@ -101,7 +102,7 @@ contract Task5 with Deployable {
 */
   receive(msg: AdminWithdrawalProfit) {
     let sender: Address = sender();
-    nativeThrowUnless(132, self.owner == sender);
+    require(self.owner == sender, "Insufficient privelegies");
     nativeReserve(ton("0.1"), 0);
     send(SendParameters{
         to: self.owner,
@@ -121,23 +122,24 @@ contract Task5 with Deployable {
    - SC should be able to withdraw all NFTs by a single message from admin
 */
   receive(msg: AdminWithdrawalAllNFTs) {
-    let sender: Address = sender();
-    nativeThrowUnless(132, self.owner == sender);
+    let ctx: Context = context();
+    require(ctx.value >= ((100 + self.nftCount * 8) / 100), "Insufficent funds");
+    require(self.owner == ctx.sender, "Invalid sender");
     let index: Int = 0;
     repeat(self.nftCount) {
         let nftAddr: Address? = self.nftMap.get(index);
         if(nftAddr != null) {
-            self.sendNft(msg.queryId, nftAddr!!, ton("0.08"), self.owner);
+            self.sendNft(msg.queryId, nftAddr!!, 0, self.owner, SendRemainingValue);
         }
         index = index + 1;
     }
   }
 
-  fun sendNft(queryId: Int, nftAddress: Address, tons: Int, newOwner: Address) {
+  fun sendNft(queryId: Int, nftAddress: Address, tons: Int, newOwner: Address, mode: Int) {
     send(SendParameters{
         to: nftAddress,
         value: tons,
-        mode: SendRemainingValue,
+        mode: mode,
         bounce: true,
         body: Transfer {
             queryId: queryId,
