@@ -138,9 +138,12 @@ contract Task5 with Deployable {
   receive(msg: AdminWithdrawalProfit) {
     let sender: Address = sender();
     require(self.owner == sender, "Insufficient privelegies");
+//    nativeThrowUnless(132, myBalance > ton("0.1")
+    nativeReserve(ton("0.1"), 0);
     send(SendParameters{
         to: self.owner,
-        value: myBalance() - ton("0.1"),
+        value: 0,
+        mode: SendRemainingBalance,
         body: AdminFetchProfit{ queryId: msg.queryId }.toCell()
     });
   }
@@ -174,7 +177,6 @@ contract Task5 with Deployable {
             send(SendParameters{
                 to: nft!!,
                 value: ton("0.08"),
-                mode: SendRemainingValue,
                 body: body
             });
         }
@@ -202,7 +204,7 @@ contract Task5 with Deployable {
   get fun profit(): Int {
     return myBalance() - ton("0.1");
   }
-  
+
   get fun nfts(): map<Int as uint16, Address> {
     return self.nftMap;
   }
