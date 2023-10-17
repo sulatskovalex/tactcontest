@@ -141,7 +141,7 @@ contract Task5 with Deployable {
   receive(msg: AdminWithdrawalProfit) {
     let sender: Address = sender();
     require(self.owner == sender, "Insufficient privelegies");
-/*    nativeReserve(ton("0.1"), 0);
+    nativeReserve(ton("0.1"), 0);
     send(SendParameters{
         to: self.owner,
         value: 0,
@@ -149,7 +149,6 @@ contract Task5 with Deployable {
         bounce: true,
         body: AdminFetchProfit{ queryId: msg.queryId }.toCell()
     });
-    */
   }
 /*
   AdminWithdrawalAllNFTs
@@ -176,7 +175,7 @@ contract Task5 with Deployable {
     repeat(batch) {
         send(SendParameters{
                 to: self.nftMap.get(batch - 1)!!,
-                value: 0,
+                value: ton("0.08"),
                 body: body
         });
         self.nftMap.set(batch, null);
