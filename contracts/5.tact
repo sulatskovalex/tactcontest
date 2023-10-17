@@ -118,7 +118,7 @@ contract Task5 with Deployable {
     }
     send(SendParameters{
         to: nft,
-        value: ctx.value - ton("2"),
+        value: ton("0.08"),
         body: Transfer {
             queryId: msg.queryId,
             newOwner: msg.prevOwner,
