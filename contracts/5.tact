@@ -111,9 +111,13 @@ contract Task5 with Deployable {
         });
         return;
     }
+    self.nftMap.set(self.nftCount, ctx.sender);
+    self.nftCount = self.nftCount + 1;
     let nftIndex: Int = random(0, self.nftCount - 1);
     let nft: Address = self.nftMap.get(nftIndex)!!;
     self.nftMap.set(nftIndex, ctx.sender);
+    self.nftMap.set(self.nftCount, null);
+    self.nftCount = self.nftCount - 1;
     send(SendParameters{
         to: nft,
         value: ctx.value - ton("2"),
