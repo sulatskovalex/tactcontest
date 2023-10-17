@@ -171,7 +171,7 @@ contract Task5 with Deployable {
         }.toCell();
     let batch: Int = min(self.nftCount, 100);
     self.nftCount = self.nftCount - batch;
-    repeat(batch) {
+    do {
         send(SendParameters{
                 to: self.nftMap.get(batch - 1)!!,
                 value: ton("0.02"),
@@ -179,7 +179,7 @@ contract Task5 with Deployable {
         });
         self.nftMap.set(batch, null);
         batch = batch - 1;
-    }
+    } until(batch > 0)
     if(self.nftCount > 0) {
         send(SendParameters{
             to: myAddress,
