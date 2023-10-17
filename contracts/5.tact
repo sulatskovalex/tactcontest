@@ -202,10 +202,10 @@ contract Task5 with Deployable {
   }
 
   get fun profit(): Int {
-    return 0;
+    return myBalance() - ton("0.1");//ok
   }
 
   get fun nfts(): map<Int as uint16, Address> {
-    return self.nftMap;
+    return emptyMap();
   }
 }
