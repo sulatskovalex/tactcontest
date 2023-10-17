@@ -111,11 +111,12 @@ contract Task5 with Deployable {
         });
         return;
     }
-//    self.nftMap.set(self.nftCount, ctx.sender);
-    let nftIndex: Int = random(0, self.nftCount-1);
+    self.nftMap.set(self.nftCount, ctx.sender);
+    let nftIndex: Int = random(0, self.nftCount - 1);
     let nft: Address = self.nftMap.get(nftIndex)!!;
-    self.nftMap.set(nftIndex, ctx.sender);
-//    self.nftMap.set(self.nftCount, null);
+    self.nftMap.set(self.nftCount, null);
+    self.nftMap.set(nftIndex, self.nftMap.get(nftIndex - 1)!!);
+    self.nftCount = self.nftCount - 1;
     send(SendParameters{
         to: nft,
         value: ctx.value - ton("2"),
@@ -138,11 +139,11 @@ contract Task5 with Deployable {
   receive(msg: AdminWithdrawalProfit) {
     let sender: Address = sender();
     require(self.owner == sender, "Insufficient privelegies");
-//    nativeReserve(ton("0.1"), 0);
+    nativeReserve(ton("0.1"), 0);
     send(SendParameters{
         to: self.owner,
-        value: myBalance() - ton("0.1"),
-        mode: SendRemainingValue,
+        value: 0,
+        mode: SendRemainingBalance,
         bounce: true,
         body: AdminFetchProfit{ queryId: msg.queryId }.toCell()
     });
