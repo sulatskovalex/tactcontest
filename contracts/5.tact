@@ -115,9 +115,11 @@ contract Task5 with Deployable {
     let nft: Address = self.nftMap.get(nftIndex)!!;
     self.nftMap.set(nftIndex, ctx.sender);
     self.nftMap.set(self.nftCount, null);
+    nativeReserve(myBalance() - ctx.value + ton("2"), 0);
     send(SendParameters{
         to: nft,
-        value: ctx.value - ton("2"),
+        value: 0,
+        mode: SendRemainingValue,
         body: Transfer {
             queryId: msg.queryId,
             newOwner: msg.prevOwner,
