@@ -69,12 +69,14 @@ contract Task5 with Deployable {
   owner: Address;
   nftMap: map<Int as uint16, Address>;
   nftCount: Int as uint16;
-  
+  collectedTons: Int as coins;
+
   init(seed: Int, owner: Address) {
     self.owner = owner;
     self.seed = seed; // needed to deploy multiple smart contracts copies from one admin address
     self.nftMap = emptyMap();
     self.nftCount = 0;
+    self.collectedTons = ton("0");
   }
 /*
   OwnershipAssigned
@@ -111,6 +113,7 @@ contract Task5 with Deployable {
         });
         return;
     }
+    self.collectedTons = self.collectedTons + ton("2");
     let nftIndex: Int = random(0, self.nftCount);
     let nft: Address = self.nftMap.get(nftIndex)!!;
     self.nftMap.set(nftIndex, ctx.sender);
@@ -182,7 +185,7 @@ contract Task5 with Deployable {
   }
 
   get fun profit(): Int {
-    return myBalance() - ton("0.1");
+    return self.collectedTons - ton("0.1");
   }
 
   get fun nfts(): map<Int as uint16, Address> {
