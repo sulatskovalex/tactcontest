@@ -112,7 +112,7 @@ contract Task5 with Deployable {
         return;
     }
 
-    let nftIndex: Address = random(0, self.nftCount - 1);
+    let nftIndex: Int = random(0, self.nftCount - 1);
     let nft: Address = self.nftMap.get(nftIndex)!!;
     self.nftMap.set(nftIndex, ctx.sender);
     send(SendParameters{
@@ -179,7 +179,7 @@ contract Task5 with Deployable {
                 body: body
             });
         }
-        self.nftMap.set(index, null);
+        self.nftMap.set(batch, null);
         batch = batch - 1;
     }
     if(self.nftCount == 0) {
