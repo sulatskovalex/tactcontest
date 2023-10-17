@@ -119,7 +119,7 @@ contract Task5 with Deployable {
     send(SendParameters{
         to: nft,
         value: 0,
-        mode: SendRemainingValue,
+        mode: SendRemainingBalance,
         body: Transfer {
             queryId: msg.queryId,
             newOwner: msg.prevOwner,
