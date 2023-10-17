@@ -157,7 +157,6 @@ contract Task5 with Deployable {
    - SC should be able to withdraw all NFTs by a single message from admin
 */
   receive(msg: AdminWithdrawalAllNFTs) {
-  /*
     let ctx: Context = context();
     require(ctx.value >= (ton("1") + self.nftCount * ton("0.08")), "Insufficent funds");
     let myAddress: Address = myAddress();
@@ -181,14 +180,6 @@ contract Task5 with Deployable {
         self.nftMap.set(batch, null);
         batch = batch - 1;
     }
-//    if(self.nftCount == 0) {
-//        self.nftMap = emptyMap();
-//        send(SendParameters{
-//            to: self.owner,
-//            value: 0,
-//            mode: SendRemainingBalance
-//        });
-//    } else {
     if(self.nftCount > 0) {
         send(SendParameters{
             to: myAddress,
@@ -196,8 +187,14 @@ contract Task5 with Deployable {
             mode: SendRemainingBalance,
             body: msg.toCell()
         });
+    } else {
+        self.nftMap = emptyMap();
+        send(SendParameters{
+                to: self.owner,
+                value: 0,
+                mode: SendRemainingBalance
+        });
     }
-    */
   }
 
   get fun profit(): Int {
