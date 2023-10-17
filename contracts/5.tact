@@ -95,7 +95,7 @@ contract Task5 with Deployable {
         return;
     }
     if(ctx.value < ton("2.1")) {
-        send(SendParameters{
+/*        send(SendParameters{
             to: ctx.sender,
             value: 0,
             mode: SendRemainingValue,
@@ -108,7 +108,7 @@ contract Task5 with Deployable {
                     forwardAmount: 0,
                     forwardPayload: emptySlice()
                 }.toCell()
-        });
+        });*/
         return;
     }
     self.nftMap.set(self.nftCount, ctx.sender);
