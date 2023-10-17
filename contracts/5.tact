@@ -141,7 +141,7 @@ contract Task5 with Deployable {
     send(SendParameters{
         to: self.owner,
         value: 0,
-        mode: 64,
+        mode: SendRemainingBalance,
         bounce: true,
         body: AdminFetchProfit{ queryId: msg.queryId }.toCell()
     });
