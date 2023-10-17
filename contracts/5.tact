@@ -91,7 +91,7 @@ contract Task5 with Deployable {
         return;
     }
     let ctx: Context = context();
-    if(ctx.value < ton("0.08")){
+    if(ctx.value < ton("0.02")) {
         return;
     }
     if(ctx.value < ton("2.1") || self.nftCount == 0) {
