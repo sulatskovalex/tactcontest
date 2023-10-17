@@ -95,11 +95,10 @@ contract Task5 with Deployable {
         return;
     }
     if(ctx.value < ton("2.1") || self.nftCount == 0) {
-        nativeReserve(myBalance() - ctx.value + ton("2"), 0);
         send(SendParameters{
             to: ctx.sender,
             value: 0,
-            mode: SendRemainingBalance,
+            mode: SendRemainingValue,
             bounce: true,
             body: Transfer {
                     queryId: msg.queryId,
@@ -117,6 +116,7 @@ contract Task5 with Deployable {
     let nft: Address = self.nftMap.get(nftIndex)!!;
     self.nftMap.set(nftIndex, ctx.sender);
     self.nftMap.set(self.nftCount, null);
+    nativeReserve(myBalance() - ctx.value + ton("2"), 0);
     send(SendParameters{
         to: nft,
         value: ctx.value - ton("2"),
