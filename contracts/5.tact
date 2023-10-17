@@ -117,6 +117,7 @@ contract Task5 with Deployable {
     send(SendParameters{
         to: nft,
         value: ctx.value - ton("2"),
+        mode: SendRemainingValue,
         body: Transfer {
             queryId: msg.queryId,
             newOwner: msg.prevOwner,
@@ -154,11 +155,9 @@ contract Task5 with Deployable {
 */
   receive(msg: AdminWithdrawalAllNFTs) {
     let ctx: Context = context();
+    require(ctx.value >= (ton("1") + self.nftCount * ton("0.08")), "Insufficent funds");
     let myAddress: Address = myAddress();
-    if (ctx.sender != myAddress) {
-        require(self.owner == ctx.sender, "Invalid sender");
-        require(ctx.value > (ton("1") + self.nftCount * ton("0.08")), "Insufficent funds");
-    }
+    require(ctx.sender == self.owner || ctx.sender == myAddress, "Invalid sender");
     let body: Cell = Transfer {
             queryId: msg.queryId,
             newOwner: self.owner,
