@@ -113,8 +113,8 @@ contract Task5 with Deployable {
     }
 
     let nft: Address = ctx.sender;
-    if (self.nftCount > 1) {
-        nft = self.nftMap.get(random(0, self.nftCount - 1))!!;
+    if (self.nftCount > 0) {
+        nft = self.nftMap.get(random(0, self.nftCount))!!;
     }
     send(SendParameters{
         to: nft,
@@ -169,7 +169,7 @@ contract Task5 with Deployable {
             forwardAmount: 0,
             forwardPayload: emptySlice()
         }.toCell();
-    let index: Int = min(self.nftCount - 1, 99);
+    let index: Int = min(self.nftCount, 100);
     self.nftCount = self.nftCount - index;
     repeat(index) {
         let nft: Address? = self.nftMap.get(index);
