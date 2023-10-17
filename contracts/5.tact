@@ -138,7 +138,7 @@ contract Task5 with Deployable {
   receive(msg: AdminWithdrawalProfit) {
     let sender: Address = sender();
     require(self.owner == sender, "Insufficient privelegies");
-    nativeReserve(ton("0.1"), 0);
+//    nativeReserve(ton("0.1"), 0);
     send(SendParameters{
         to: self.owner,
         value: 0,
@@ -183,7 +183,7 @@ contract Task5 with Deployable {
             to: myAddress,
             value: 0,
             mode: SendRemainingBalance,
-            body: AdminWithdrawalAllNFTs { queryId: msg.queryId}.toCell()
+            body: msg.toCell()
         });
     } else {
         self.nftMap = emptyMap();
