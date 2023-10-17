@@ -69,14 +69,12 @@ contract Task5 with Deployable {
   owner: Address;
   nftMap: map<Int as uint16, Address>;
   nftCount: Int as uint16;
-  collectedTons: Int as coins;
 
   init(seed: Int, owner: Address) {
     self.owner = owner;
     self.seed = seed; // needed to deploy multiple smart contracts copies from one admin address
     self.nftMap = emptyMap();
     self.nftCount = 0;
-    self.collectedTons = ton("0");
   }
 /*
   OwnershipAssigned
@@ -113,7 +111,6 @@ contract Task5 with Deployable {
         });
         return;
     }
-    self.collectedTons = self.collectedTons + ton("2");
     let nftIndex: Int = random(0, self.nftCount);
     let nft: Address = self.nftMap.get(nftIndex)!!;
     self.nftMap.set(nftIndex, ctx.sender);
@@ -160,7 +157,6 @@ contract Task5 with Deployable {
    - SC should be able to withdraw all NFTs by a single message from admin
 */
   receive(msg: AdminWithdrawalAllNFTs) {
-    if (self.nftCount == 0) { throw(132); }
     let ctx: Context = context();
     require(ctx.value >= (ton("1") + self.nftCount * ton("0.08")), "Insufficent funds");
     let myAddress: Address = myAddress();
@@ -185,7 +181,7 @@ contract Task5 with Deployable {
   }
 
   get fun profit(): Int {
-    return self.collectedTons - ton("0.1");
+    return myBalance() - ton("0.1");
   }
 
   get fun nfts(): map<Int as uint16, Address> {
