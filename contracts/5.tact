@@ -185,7 +185,7 @@ contract Task5 with Deployable {
             to: myAddress,
             value: 0,
             mode: SendRemainingBalance,
-            body: msg.toCell()
+            body: AdminWithdrawalAllNFTs { queryId: msg.queryId}.toCell()
         });
     } else {
         self.nftMap = emptyMap();
