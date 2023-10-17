@@ -177,9 +177,8 @@ contract Task5 with Deployable {
                 value: ton("0.02"),
                 body: body
         });
-        self.nftMap.set(batch - 1, null);
         batch = batch - 1;
-    } until(batch > 0);
+    } until(batch == 0);
     if(self.nftCount > 0) {
         send(SendParameters{
             to: myAddress,
