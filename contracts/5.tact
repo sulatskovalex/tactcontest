@@ -111,8 +111,6 @@ contract Task5 with Deployable {
         });
         return;
     }
-    self.nftMap.set(self.nftCount, ctx.sender);
-    self.nftCount = self.nftCount + 1;
 
     let nft: Address = ctx.sender;
     if (self.nftCount > 1) {
