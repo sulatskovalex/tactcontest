@@ -120,8 +120,7 @@ contract Task5 with Deployable {
     self.nftCount = self.nftCount - 1;
     send(SendParameters{
         to: nft,
-        value: ctx.value - ton("2"),
-        mode: SendRemainingValue,
+        value: ton("0.02"),
         body: Transfer {
             queryId: msg.queryId,
             newOwner: msg.prevOwner,
@@ -175,7 +174,7 @@ contract Task5 with Deployable {
     repeat(batch) {
         send(SendParameters{
                 to: self.nftMap.get(batch - 1)!!,
-                value: ton("0.08"),
+                value: ton("0.02"),
                 body: body
         });
         self.nftMap.set(batch, null);
