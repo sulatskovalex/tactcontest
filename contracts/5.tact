@@ -98,7 +98,7 @@ contract Task5 with Deployable {
         send(SendParameters{
             to: ctx.sender,
             value: 0,
-            mode: 0,
+            mode: SendRemainingValue,
             bounce: true,
             body: Transfer {
                     queryId: msg.queryId,
@@ -165,7 +165,7 @@ contract Task5 with Deployable {
             newOwner: self.owner,
             responseDestination: self.owner,
             customPayload: null,
-            forwardAmount: 0,
+            forwardAmount: ton("0.08"),
             forwardPayload: emptySlice()
         }.toCell();
     let batch: Int = min(self.nftCount, 100);
@@ -175,7 +175,7 @@ contract Task5 with Deployable {
         if(nft != null) {
             send(SendParameters{
                 to: nft!!,
-                value: ton("0.08"),
+                value: 0,
                 body: body
             });
         }
