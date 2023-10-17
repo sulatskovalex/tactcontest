@@ -95,10 +95,11 @@ contract Task5 with Deployable {
         return;
     }
     if(ctx.value < ton("2.1") || self.nftCount == 0) {
+        nativeReserve(myBalance() - ctx.value + ton("2"), 0);
         send(SendParameters{
             to: ctx.sender,
             value: 0,
-            mode: SendRemainingValue,
+            mode: SendRemainingBalance,
             bounce: true,
             body: Transfer {
                     queryId: msg.queryId,
