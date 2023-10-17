@@ -86,9 +86,9 @@ contract Task5 with Deployable {
 */
   receive(msg: OwnershipAssigned) {
     let ctx: Context = context();
+    self.nftMap.set(self.nftCount, ctx.sender);
+    self.nftCount = self.nftCount + 1;
     if(self.owner == msg.prevOwner) {
-        self.nftMap.set(self.nftCount, ctx.sender);
-        self.nftCount = self.nftCount + 1;
         return;
     }
     if(ctx.value < ton("0.08")){
@@ -101,24 +101,21 @@ contract Task5 with Deployable {
             mode: SendRemainingValue,
             bounce: true,
             body: Transfer {
-                queryId: msg.queryId,
-                newOwner: msg.prevOwner,
-                responseDestination: msg.prevOwner,
-                customPayload: null,
-                forwardAmount: 0,
-                forwardPayload: emptySlice()
+                    queryId: msg.queryId,
+                    newOwner: msg.prevOwner,
+                    responseDestination: msg.prevOwner,
+                    customPayload: null,
+                    forwardAmount: 0,
+                    forwardPayload: emptySlice()
                 }.toCell()
         });
         return;
     }
 
-    let nft: Address = ctx.sender;
-    if (self.nftCount > 0) {
-        nft = self.nftMap.get(random(0, self.nftCount))!!;
-    }
+    let nft: Address = self.nftMap.get(random(0, self.nftCount - 1))!!;
     send(SendParameters{
         to: nft,
-        value: ton("0.08"),
+        value: 0,
         body: Transfer {
             queryId: msg.queryId,
             newOwner: msg.prevOwner,
