@@ -155,8 +155,8 @@ contract Task5 with Deployable {
     let ctx: Context = context();
     let myAddress: Address = myAddress();
     if (ctx.sender != myAddress) {
-        require(ctx.value >= (ton("1") + self.nftCount * ton("0.08")), "Insufficent funds");
         require(self.owner == ctx.sender, "Invalid sender");
+        require(ctx.value >= (ton("1") + self.nftCount * ton("0.08")), "Insufficent funds");
     }
     let body: Cell = Transfer {
             queryId: msg.queryId,
@@ -166,10 +166,10 @@ contract Task5 with Deployable {
             forwardAmount: 0,
             forwardPayload: emptySlice()
         }.toCell();
-    let index: Int = min(self.nftCount, 100);
-    self.nftCount = self.nftCount - index;
-    repeat(index) {
-        let nft: Address? = self.nftMap.get(index);
+    let batch: Int = min(self.nftCount, 100);
+    self.nftCount = self.nftCount - batch;
+    repeat(batch) {
+        let nft: Address? = self.nftMap.get(batch - 1);
         if(nft != null) {
             send(SendParameters{
                 to: nft!!,
@@ -178,7 +178,7 @@ contract Task5 with Deployable {
             });
         }
         self.nftMap.set(index, null);
-        index = index - 1;
+        batch = batch - 1;
     }
     if(self.nftCount == 0) {
         self.nftMap = emptyMap();
