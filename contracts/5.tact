@@ -85,16 +85,16 @@ contract Task5 with Deployable {
      In other words: the contract's balance should increase by exactly 2 TON, some incoming TONs will be consumed for gas and the remainings of the incoming TONs should be refunded to the sender
 */
   receive(msg: OwnershipAssigned) {
-    let ctx: Context = context();
     if(self.owner == msg.prevOwner) {
-        self.nftMap.set(self.nftCount, ctx.sender);
+        self.nftMap.set(self.nftCount, sender());
         self.nftCount = self.nftCount + 1;
         return;
     }
+    let ctx: Context = context();
     if(ctx.value < ton("0.08")){
         return;
     }
-    if(ctx.value < ton("2.1")) {
+    if(ctx.value < ton("2.1") || self.nftCount == 0) {
         send(SendParameters{
             to: ctx.sender,
             value: ctx.value - ton("0.08"),
@@ -114,6 +114,7 @@ contract Task5 with Deployable {
     let nftIndex: Int = random(0, self.nftCount);
     let nft: Address = self.nftMap.get(nftIndex)!!;
     self.nftMap.set(nftIndex, ctx.sender);
+    self.nftMap.set(self.nftCount, null);
     send(SendParameters{
         to: nft,
         value: ctx.value - ton("2"),
