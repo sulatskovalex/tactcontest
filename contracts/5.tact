@@ -111,12 +111,11 @@ contract Task5 with Deployable {
         });
         return;
     }
-    self.nftMap.set(self.nftCount, ctx.sender);
-    let nftIndex: Int = random(0, self.nftCount);
+//    self.nftMap.set(self.nftCount, ctx.sender);
+    let nftIndex: Int = random(0, self.nftCount-1);
     let nft: Address = self.nftMap.get(nftIndex)!!;
     self.nftMap.set(nftIndex, ctx.sender);
-    self.nftMap.set(self.nftCount, null);
-    nativeReserve(myBalance() - ctx.value + ton("2"), 0);
+//    self.nftMap.set(self.nftCount, null);
     send(SendParameters{
         to: nft,
         value: ctx.value - ton("2"),
