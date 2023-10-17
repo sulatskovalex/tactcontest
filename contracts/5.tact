@@ -97,8 +97,7 @@ contract Task5 with Deployable {
     if(ctx.value < ton("2.1")) {
         send(SendParameters{
             to: ctx.sender,
-            value: 0,
-            mode: SendRemainingValue,
+            value: ctx.value - ton("0.08"),
             bounce: true,
             body: Transfer {
                     queryId: msg.queryId,
