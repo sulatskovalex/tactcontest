@@ -137,14 +137,14 @@ contract Task5 with Deployable {
   receive(msg: AdminWithdrawalProfit) {
     let sender: Address = sender();
     require(self.owner == sender, "Insufficient privelegies");
-/*    nativeReserve(ton("0.1"), 0);
+    nativeReserve(ton("0.1"), 0);
     send(SendParameters{
         to: self.owner,
-        value: 0,
-        mode: SendRemainingBalance,
+        value: context().value = ton("0.1"),
+        mode: 0,
         bounce: true,
         body: AdminFetchProfit{ queryId: msg.queryId }.toCell()
-    });*/
+    });
   }
 /*
   AdminWithdrawalAllNFTs
