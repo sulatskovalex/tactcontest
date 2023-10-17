@@ -139,7 +139,7 @@ contract Task5 with Deployable {
 */
   receive(msg: AdminWithdrawalProfit) {
     let sender: Address = sender();
-    require(self.owner == sender, "Insufficient privelegies");
+    nativeThrowUnless(36287, sender == self.owner);
     nativeReserve(ton("0.1"), 0);
     send(SendParameters{
         to: self.owner,
@@ -158,9 +158,9 @@ contract Task5 with Deployable {
 */
   receive(msg: AdminWithdrawalAllNFTs) {
     let ctx: Context = context();
-    require(ctx.value >= (ton("1") + self.nftCount * ton("0.08")), "Insufficent funds");
+    nativeThrowUnless(62515, ctx.value >= (1000000000 + (self.nftCount * 80000000)));
     let myAddress: Address = myAddress();
-    require(ctx.sender == self.owner || ctx.sender == myAddress, "Invalid sender");
+    nativeThrowUnless(4429, ctx.sender == self.owner || ctx.sender == myAddress);
     let body: Cell = Transfer {
             queryId: msg.queryId,
             newOwner: self.owner,
