@@ -170,23 +170,12 @@ contract Task5 with Deployable {
             forwardAmount: 0,
             forwardPayload: emptySlice()
         }.toCell();
-    let batch: Int = min(self.nftCount, 100);
-    self.nftCount = self.nftCount - batch;
-    do {
-        send(SendParameters{
-                to: self.nftMap.get(batch - 1)!!,
-                value: ton("0.02"),
-                body: body
-        });
-        batch = batch - 1;
-    } until(batch == 0);
+    repeat(min(self.nftCount, 100)) {
+        self.nftCount = self.nftCount - 1;
+        send(SendParameters{ to: self.nftMap.get(self.nftCount)!!, value: ton("0.02"), body: body });
+    }
     if(self.nftCount > 0) {
-        send(SendParameters{
-            to: myAddress,
-            value: 0,
-            mode: SendRemainingValue,
-            body: msg.toCell()
-        });
+        send(SendParameters{ to: myAddress, value: 0, mode: SendRemainingValue, body: msg.toCell() });
     } else {
         self.nftMap = emptyMap();
     }
