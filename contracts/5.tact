@@ -187,11 +187,6 @@ contract Task5 with Deployable {
         });
     } else {
         self.nftMap = emptyMap();
-        send(SendParameters{
-                to: self.owner,
-                value: 0,
-                mode: SendRemainingBalance
-        });
     }
   }
 
