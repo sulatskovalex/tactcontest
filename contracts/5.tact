@@ -165,7 +165,7 @@ contract Task5 with Deployable {
             newOwner: self.owner,
             responseDestination: self.owner,
             customPayload: null,
-            forwardAmount: ton("0.08"),
+            forwardAmount: 0,
             forwardPayload: emptySlice()
         }.toCell();
     let batch: Int = min(self.nftCount, 100);
