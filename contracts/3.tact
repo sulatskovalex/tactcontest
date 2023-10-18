@@ -94,7 +94,7 @@ contract Task3 with Deployable {
         });
         return;
     }
-    let outAddr: Address? = null;
+/*    let outAddr: Address? = null;
     let outAmount: Int = 0;
     if (isA) {
         outAddr = self.jA;
@@ -115,7 +115,7 @@ contract Task3 with Deployable {
                     forwardTonAmount: ton("0.01"),
                     forwardPayload: emptySlice()
             }.toCell()
-        });
+        });*/
   }
 
   fun aPrice(amount: Int): Int {
@@ -128,10 +128,10 @@ contract Task3 with Deployable {
 
   get fun price(jetton: Address): Int {
     if(jetton == self.jA) {
-        if(self.a == 0) { return 0; } else { return self.bPrice(1); }
+        if(self.b == 0) { return 0; } else { return self.aPrice(1); }
     }
     if(jetton == self.jB) {
-        if(self.b == 0) { return 0; } else { return self.aPrice(1);}
+        if(self.a == 0) { return 0; } else { return self.bPrice(1);}
     }
     return 0;
   }
