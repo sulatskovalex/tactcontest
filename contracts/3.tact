@@ -78,7 +78,7 @@ contract Task3 with Deployable {
     } else {
         nativeThrow(100);
     }
-    if(self.a == 0 || self.b == 0 || (isA && msg.amount < (self.b*self.decimal/self.a)) ||(isB && msg.amount < self.a*self.decimal/self.b)) {
+    if(self.a == 0 || self.b == 0 || (isA && ((msg.amount * self.b * self.decimal / self.a) > self.b) || (isB && ((msg.amount * self.a * self.decimal) / self.b > self.a)) {
         send(SendParameters{
             to: jetton,
             value: 0,
@@ -92,7 +92,30 @@ contract Task3 with Deployable {
                     forwardPayload: emptySlice()
             }.toCell()
         });
+        return;
     }
+    let outAddr: Address? = null;
+    let outAmount: Int = 0;
+    if (isA) {
+        out = self.jA;
+        outAmount = msg.amount * self.b * self.decimal / self.a;
+    } else {
+        out = self.jB;
+        outAmount = msg.amount * self.a * self.decimal / self.b;
+    }
+        send(SendParameters{
+            to: jetton,
+            value: 0,
+            body: TokenTransfer{
+                    queryId: 0,
+                    amount: outAmount,
+                    destination: msg.from,
+                    responseDestination: myAddress(),
+                    customPayload: null,
+                    forwardTonAmount: ton("0.01"),
+                    forwardPayload: emptySlice()
+            }.toCell()
+        });
   }
   
   get fun price(jetton: Address): Int {
