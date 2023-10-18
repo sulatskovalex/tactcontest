@@ -62,14 +62,14 @@ contract Task3 with Deployable {
 
   receive(msg: TokenNotification) {
     let jetton: Address = sender();
-    let isOwner: Boolean = msg.from == self.owner;
+    let isOwner: Bool = msg.from == self.owner;
     if (jetton != self.jA) {
         if(isOwner){
             self.a = self.a + msg.amount;
             return;
         }
     } else if(jetton != self.jB) {
-        if(isOwner){
+        if (isOwner) {
             self.b = self.b + msg.amount;
             return;
         }
