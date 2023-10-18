@@ -51,51 +51,53 @@ message(0xf8a7ea5) TokenTransfer {
 
 contract Task3 with Deployable {
   owner: Address;
-  aAmount: Int;
-  bAmount: Int;
-  jettonAddressA: Address;
-  jettonAddressB: Address;
+  a: Int;
+  b: Int;
+  jA: Address;
+  jB: Address;
   decimal: Int;
 
-  init(admin: Address, newJettonAddressA: Address, newJettonAddressB: Address) {
+  init(admin: Address, newjA: Address, newjB: Address) {
     self.owner = admin;
-    self.jettonAddressA = newJettonAddressA;
-    self.jettonAddressB = newJettonAddressB;
-    self.aAmount = 0;
-    self.bAmount = 0;
+    self.jA = newjA;
+    self.jB = newjB;
+    self.a = 0;
+    self.b = 0;
     self.decimal = 1000000000;
   }
 
   receive(msg: TokenNotification) {
-    if(msg.from == self.jettonAddressA) {
-        self.aAmount = self.aAmount + msg.amount;
-    } else if(msg.from == self.jettonAddressB) {
-        self.bAmount = self.bAmount + msg.amount;
+  let jettonAddr: Address = sender();
+  nativeThrowUnless(32, jettonAddr == self.jA || jettonAddr == self.jB);
+    if(jettonAddr == self.jA) {
+        self.a = self.a + msg.amount;
+    } else if(jettonAddr == self.jB) {
+        self.b = self.b + msg.amount;
     }
   }
   
   get fun price(jetton: Address): Int {
-    if(jetton == self.jettonAddressA) {
-        if(self.aAmount == 0) {
+    if(jetton == self.jA) {
+        if(self.a == 0) {
             return 0;
         }
-        return self.bAmount * self.decimal / self.aAmount;
+        return self.b * self.decimal / self.a;
     }
-    if(jetton == self.jettonAddressB) {
-        if(self.bAmount == 0) {
+    if(jetton == self.jB) {
+        if(self.b == 0) {
             return 0;
         }
-        return self.aAmount * self.decimal / self.bAmount;
+        return self.a * self.decimal / self.b;
     }
     return 0;
   }
   
   get fun balance(jetton: Address): Int {
-    if(jetton == self.jettonAddressA) {
-        return self.aAmount * self.decimal;
+    if(jetton == self.jA) {
+        return self.a * self.decimal;
     }
-    if(jetton == self.jettonAddressB) {
-        return self.bAmount * self.decimal;
+    if(jetton == self.jB) {
+        return self.b * self.decimal;
     }
     return 0;
   }
