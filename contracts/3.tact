@@ -67,26 +67,32 @@ contract Task3 with Deployable {
   }
 
   receive(msg: TokenNotification) {
-  let jettonAddr: Address = sender();
-  nativeThrowUnless(32, jettonAddr == self.jA || jettonAddr == self.jB);
-    if(jettonAddr == self.jA) {
-        self.a = self.a + msg.amount;
-    } else if(jettonAddr == self.jB) {
-        self.b = self.b + msg.amount;
+    let jetton: Address = sender();
+    if(jetton != self.jA || jetton != self.jB){
+        send(SendParameters{
+            to: jetton,
+            value: 0,
+            body: TokenTransfer{
+                    queryId: msg.queryId,
+                    amount: msg.amount,
+                    destination: msg.from,
+                    responseDestination: msg.from,
+                    customPayload: null,
+                    forwardTonAmount: 0,
+                    forwardPayload: msg.forwardPayload
+            }.toCell()
+        });
     }
   }
   
   get fun price(jetton: Address): Int {
+    if(self.a == 0 || self.b == 0) {
+        return 0;
+    }
     if(jetton == self.jA) {
-        if(self.a == 0) {
-            return 0;
-        }
         return self.b * self.decimal / self.a;
     }
     if(jetton == self.jB) {
-        if(self.b == 0) {
-            return 0;
-        }
         return self.a * self.decimal / self.b;
     }
     return 0;
