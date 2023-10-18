@@ -78,7 +78,7 @@ contract Task3 with Deployable {
     } else {
         nativeThrow(100);
     }
-    if(self.a == 0 || self.b == 0 || (isA && ((msg.amount * self.b * self.decimal / self.a) > self.b) || (isB && ((msg.amount * self.a * self.decimal) / self.b > self.a)) {
+    if(self.a == 0 || self.b == 0 || (isA && msg.amount * self.b * self.decimal / self.a > self.b) || (isB && msg.amount * self.a * self.decimal / self.b > self.a)) {
         send(SendParameters{
             to: jetton,
             value: 0,
@@ -97,14 +97,14 @@ contract Task3 with Deployable {
     let outAddr: Address? = null;
     let outAmount: Int = 0;
     if (isA) {
-        out = self.jA;
+        outAddr = self.jA;
         outAmount = msg.amount * self.b * self.decimal / self.a;
     } else {
-        out = self.jB;
+        outAddr = self.jB;
         outAmount = msg.amount * self.a * self.decimal / self.b;
     }
         send(SendParameters{
-            to: jetton,
+            to: outAddr!!,
             value: 0,
             body: TokenTransfer{
                     queryId: 0,
