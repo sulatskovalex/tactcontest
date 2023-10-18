@@ -68,8 +68,8 @@ contract Task3 with Deployable {
 
   receive(msg: TokenNotification) {
     let jetton: Address = sender();
-    if (jetton != self.jA || jetton != self.jB) { nativeThrow(132); }
-    if(self.a ==0 ||self.b == 0) {
+    if (jetton != self.jA || jetton != self.jB) { nativeThrow(32); }
+    if(self.a ==0 || self.b == 0) {
         send(SendParameters{
             to: jetton,
             value: 0,
