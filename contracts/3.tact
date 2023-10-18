@@ -94,15 +94,10 @@ contract Task3 with Deployable {
         });
         return;
     }
-/*    let outAddr: Address? = null;
+    let outAddr: Address? = null;
     let outAmount: Int = 0;
-    if (isA) {
-        outAddr = self.jA;
-        outAmount = self.bPrice(msg.amount);
-    } else {
-        outAddr = self.jB;
-        outAmount = self.aPrice(msg.amount);
-    }
+    if (isA) { outAddr = self.jB; outAmount = self.bPrice(msg.amount); }
+    else { outAddr = self.jA; outAmount = self.aPrice(msg.amount); }
         send(SendParameters{
             to: outAddr!!,
             value: 0,
@@ -115,7 +110,7 @@ contract Task3 with Deployable {
                     forwardTonAmount: ton("0.01"),
                     forwardPayload: emptySlice()
             }.toCell()
-        });*/
+        });
   }
 
   fun aPrice(amount: Int): Int {
