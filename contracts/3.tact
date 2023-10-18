@@ -51,8 +51,8 @@ message(0xf8a7ea5) TokenTransfer {
 
 contract Task3 with Deployable {
   owner: Address;
-  a: Int;
-  b: Int;
+  a: Int as coins;
+  b: Int as coins;
   jA: Address;
   jB: Address;
   decimal: Int;
@@ -68,8 +68,9 @@ contract Task3 with Deployable {
 
   receive(msg: TokenNotification) {
     let jetton: Address = sender();
-    if(jetton != self.jA || jetton != self.jB){
-        send(SendParameters{
+    if(msg.from != self.jA || msg.from != self.jB) {
+        nativeThrow(132);
+/*        send(SendParameters{
             to: jetton,
             value: 0,
             body: TokenTransfer{
@@ -81,7 +82,7 @@ contract Task3 with Deployable {
                     forwardTonAmount: 0,
                     forwardPayload: msg.forwardPayload
             }.toCell()
-        });
+        });*/
     }
   }
   
@@ -100,10 +101,10 @@ contract Task3 with Deployable {
   
   get fun balance(jetton: Address): Int {
     if(jetton == self.jA) {
-        return self.a * self.decimal;
+        return self.a;
     }
     if(jetton == self.jB) {
-        return self.b * self.decimal;
+        return self.b;
     }
     return 0;
   }
