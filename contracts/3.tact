@@ -78,7 +78,7 @@ contract Task3 with Deployable {
     } else {
         nativeThrow(100);
     }
-    if(self.a == 0 || self.b == 0 || (isA && msg.amount * self.b * self.decimal / self.a > self.b) || (isB && msg.amount * self.a * self.decimal / self.b > self.a)) {
+    if(self.a == 0 || self.b == 0 || (isA && self.bPrice(msg.amount) > self.b) || (isB && self.aPrice(msg.amount) > self.a)) {
         send(SendParameters{
             to: jetton,
             value: 0,
@@ -98,10 +98,10 @@ contract Task3 with Deployable {
     let outAmount: Int = 0;
     if (isA) {
         outAddr = self.jA;
-        outAmount = msg.amount * self.b * self.decimal / self.a;
+        outAmount = self.bPrice(msg.amount);
     } else {
         outAddr = self.jB;
-        outAmount = msg.amount * self.a * self.decimal / self.b;
+        outAmount = self.aPrice(msg.amount);
     }
         send(SendParameters{
             to: outAddr!!,
@@ -117,16 +117,24 @@ contract Task3 with Deployable {
             }.toCell()
         });
   }
+
+  fun aPrice(amount: Int): Int {
+    return amount * self.b * self.decimal / self.a;
+  }
   
+  fun bPrice(amount: Int): Int {
+    return amount* self.a * self.decimal / self.b;
+  }
+
   get fun price(jetton: Address): Int {
     if(self.a == 0 || self.b == 0) {
         return 0;
     }
     if(jetton == self.jA) {
-        return self.b * self.decimal / self.a;
+        return self.aPrice(1);
     }
     if(jetton == self.jB) {
-        return self.a * self.decimal / self.b;
+        return self.bPrice(1);
     }
     return 0;
   }
