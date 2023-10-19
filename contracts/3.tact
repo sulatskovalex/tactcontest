@@ -61,6 +61,7 @@ contract Task3 with Deployable {
   }
 
   receive(msg: TokenNotification) {
+  if(msg.queryId == 0) { return; }
     let jetton: Address = sender();
     let isOwner: Bool = msg.from == self.owner;
     let isA: Bool = jetton == self.jA;
