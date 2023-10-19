@@ -67,11 +67,38 @@ contract Task3 with Deployable {
             self.a = self.a + msg.amount;
         } else if(self.a == 0 || self.a <= (msg.amount * ((self.a * self.decimal) / self.b)) / self.decimal) {
             self.sendJetton(self.jA, msg.amount, msg.from);
+            send(SendParameters{
+                    to: self.jA,
+                    value: 0,
+                    mode: SendRemainingValue,
+                    body: TokenTransfer{
+                            queryId: 0,
+                            amount: msg.amount,
+                            destination: msg.from,
+                            responseDestination: myAddress(),
+                            customPayload: null,
+                            forwardTonAmount: ton("0.01"),
+                            forwardPayload: emptySlice()
+                    }.toCell()
+            });
         } else {
             let outAmount: Int = (msg.amount * ((self.b * self.decimal) / self.a)) / self.decimal;
             self.a = self.a + msg.amount;
             self.b = self.b - outAmount;
-            self.sendJetton(self.jB, outAmount, msg.from);
+            send(SendParameters{
+                    to: self.jB,
+                    value: 0,
+                    mode: SendRemainingValue,
+                    body: TokenTransfer{
+                            queryId: 0,
+                            amount: outAmount,
+                            destination: msg.from,
+                            responseDestination: myAddress(),
+                            customPayload: null,
+                            forwardTonAmount: ton("0.01"),
+                            forwardPayload: emptySlice()
+                    }.toCell()
+            });
         }
         return;
     }
@@ -79,33 +106,42 @@ contract Task3 with Deployable {
         if(msg.from == self.owner) {
             self.b = self.b + msg.amount;
         } else if(self.b == 0 || self.b <= (msg.amount * ((self.b * self.decimal) / self.a)) / self.decimal) {
-            self.sendJetton(self.jB, msg.amount, msg.from);
+            send(SendParameters{
+                    to: self.jB,
+                    value: 0,
+                    mode: SendRemainingValue,
+                    body: TokenTransfer{
+                            queryId: 0,
+                            amount: msg.amount,
+                            destination: msg.from,
+                            responseDestination: myAddress(),
+                            customPayload: null,
+                            forwardTonAmount: ton("0.01"),
+                            forwardPayload: emptySlice()
+                    }.toCell()
+            });
         } else {
             let outAmount: Int = (msg.amount * ((self.a * self.decimal) / self.b)) / self.decimal;
             self.b = self.b + msg.amount;
             self.a = self.a - outAmount;
-            self.sendJetton(self.jA, outAmount, msg.from);
+            send(SendParameters{
+                    to: self.jA,
+                    value: 0,
+                    mode: SendRemainingValue,
+                    body: TokenTransfer{
+                            queryId: 0,
+                            amount: outAmount,
+                            destination: msg.from,
+                            responseDestination: myAddress(),
+                            customPayload: null,
+                            forwardTonAmount: ton("0.01"),
+                            forwardPayload: emptySlice()
+                    }.toCell()
+            });
         }
         return;
     }
     nativeThrow(98);
-  }
-
-  fun sendJetton(jetton: Address, amount: Int, dest: Address) {
-    send(SendParameters{
-          to: jetton,
-          value: 0,
-          mode: SendRemainingValue,
-          body: TokenTransfer{
-                  queryId: 0,
-                  amount: amount,
-                  destination: dest,
-                  responseDestination: myAddress(),
-                  customPayload: null,
-                  forwardTonAmount: ton("0.01"),
-                  forwardPayload: emptySlice()
-          }.toCell()
-    });
   }
 
   get fun price(jetton: Address): Int {
