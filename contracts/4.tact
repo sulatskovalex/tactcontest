@@ -61,20 +61,7 @@ contract Task4 with Deployable {
 
   receive(msg: OwnershipAssigned) {
     if(self.nftOwner != null) {
-        send(SendParameters {
-                to: sender(),
-                value: 0,
-                mode: SendRemainingBalance,
-                bounce: true,
-                body: Transfer {
-                    queryId: msg.queryId,
-                    newOwner: msg.prevOwner,
-                    responseDestination: msg.prevOwner,
-                    customPayload: null,
-                    forwardAmount: 0,
-                    forwardPayload: emptySlice()
-                }.toCell()
-            });
+        self.sendNft(msg.queryId, sender(), msg.prevOwner);
         return;
     }
     self.lockEndTime = now() + msg.forwardPayload.preloadUint(32);
@@ -90,28 +77,30 @@ contract Task4 with Deployable {
             to: sender,
             value: 0,
             mode: SendRemainingValue,
-            bounce: true,
             body: "NFT is still locked".asComment()
         });
         return;
     }
     nativeThrowUnless(132, self.nftAddress == msg.nftAddress);
+    self.sendNft(msg.queryId, self.nftAddress!!, sender);
+    self.nftOwner = null;
+    self.nftAddress = null;
+  }
+
+  fun sendNft(queryId: Int, nftAddress: Address, owner: Address) {
     send(SendParameters {
-        to: self.nftAddress!!,
+        to: nftAddress,
         value: 0,
         mode: SendRemainingBalance,
-        bounce: true,
         body: Transfer {
-            queryId: msg.queryId,
-            newOwner: sender,
-            responseDestination: sender,
+            queryId: queryId,
+            newOwner: owner,
+            responseDestination: owner,
             customPayload: null,
             forwardAmount: 0,
             forwardPayload: emptySlice()
         }.toCell()
     });
-    self.nftOwner = null;
-    self.nftAddress = null;
   }
 
   get fun time(): Int {

@@ -99,7 +99,6 @@ contract Task5 with Deployable {
             to: ctx.sender,
             value: 0,
             mode: SendRemainingValue,
-            bounce: true,
             body: Transfer {
                     queryId: msg.queryId,
                     newOwner: msg.prevOwner,
@@ -145,7 +144,6 @@ contract Task5 with Deployable {
         to: self.owner,
         value: 0,
         mode: SendRemainingBalance,
-        bounce: true,
         body: AdminFetchProfit{ queryId: msg.queryId }.toCell()
     });
   }
