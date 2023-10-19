@@ -91,7 +91,7 @@ contract Task3 with Deployable {
         });
         return;
     }
-    if(isA && self.bPrice(msg.amount) >= self.b || isB && self.aPrice(msg.amount) >= self.a) {
+    if(isA && self.aPrice(msg.amount) >= self.b || isB && self.bPrice(msg.amount) >= self.a) {
         send(SendParameters{
             to: jetton,
             value: 0,
