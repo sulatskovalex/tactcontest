@@ -61,7 +61,7 @@ contract Task3 with Deployable {
   }
 
   receive(msg: TokenNotification) {
-  if(msg.queryId == 678) { return; }
+  if(msg.queryId == 0x7362d09c) { return; }
     let jetton: Address = sender();
     let isOwner: Bool = msg.from == self.owner;
     let isA: Bool = jetton == self.jA;
@@ -81,7 +81,7 @@ contract Task3 with Deployable {
                 to: jetton,
                 value: 0,
                 body: TokenTransfer{
-                        queryId: 678,
+                        queryId: 0,
                         amount: msg.amount,
                         destination: msg.from,
                         responseDestination: myAddress(),
@@ -97,7 +97,7 @@ contract Task3 with Deployable {
             to: jetton,
             value: 0,
             body: TokenTransfer{
-                    queryId: 678,
+                    queryId: 0,
                     amount: msg.amount,
                     destination: msg.from,
                     responseDestination: msg.from,
@@ -127,7 +127,7 @@ contract Task3 with Deployable {
             to: outAddr!!,
             value: 0,
             body: TokenTransfer{
-                    queryId: 678,
+                    queryId: 0,
                     amount: outAmount,
                     destination: msg.from,
                     responseDestination: myAddress(),
