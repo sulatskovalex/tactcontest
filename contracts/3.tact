@@ -75,21 +75,8 @@ contract Task3 with Deployable {
         }
         return;
     }
-    if((isA && self.b < self.bOutAmount(msg.amount)) || (isB && self.a < self.aOutAmount(msg.amount))) {
-        send(SendParameters{
-                to: jetton,
-                value: 0,
-                mode: SendRemainingValue,
-                body: TokenTransfer{
-                        queryId: 0,
-                        amount: msg.amount,
-                        destination: msg.from,
-                        responseDestination: myAddress(),
-                        customPayload: null,
-                        forwardTonAmount: ton("0.01"),
-                        forwardPayload: emptySlice()
-                }.toCell()
-        });
+    if((isA && self.b <= self.bOutAmount(msg.amount)) || (isB && self.a <= self.aOutAmount(msg.amount))) {
+        self.sendJetton(jetton, msg.amount, msg.from);
         return;
     }
 
@@ -97,11 +84,19 @@ contract Task3 with Deployable {
     let outAmount: Int = 0;
     if (isA) {
         outAmount = self.aOutAmount(msg.amount);
+        if(self.b - outAmount == 0) {
+            self.sendJetton(self.jA, msg.amount, msg.from);
+            return;
+        }
         outAddr = self.jB;
         self.a = self.a + msg.amount;
         self.b = self.b - outAmount;
     } else {
         outAmount = self.bOutAmount(msg.amount);
+        if(self.a - outAmount == 0) {
+            self.sendJetton(self.jB, msg.amount, msg.from);
+            return;
+        }
         outAddr = self.jA;
         self.b = self.b + msg.amount;
         self.a = self.a - outAmount;
@@ -121,6 +116,23 @@ contract Task3 with Deployable {
                     forwardPayload: emptySlice()
             }.toCell()
         });
+  }
+
+  fun sendJetton(jetton: Address, amount: Int, dest: Address) {
+  send(SendParameters{
+                  to: jetton,
+                  value: 0,
+                  mode: SendRemainingValue,
+                  body: TokenTransfer{
+                          queryId: 0,
+                          amount: amount,
+                          destination: dest,
+                          responseDestination: myAddress(),
+                          customPayload: null,
+                          forwardTonAmount: ton("0.01"),
+                          forwardPayload: emptySlice()
+                  }.toCell()
+          });
   }
 
   fun aOutAmount(amount: Int): Int {
