@@ -91,7 +91,7 @@ contract Task3 with Deployable {
         });
         return;
     }
-    if(isA && self.bPrice(msg.amount) >= self.a || isB && self.aPrice(msg.amount) >= self.b) {
+    if(isA && self.bPrice(msg.amount) >= self.b || isB && self.aPrice(msg.amount) >= self.a) {
         send(SendParameters{
             to: jetton,
             value: 0,
@@ -120,7 +120,9 @@ contract Task3 with Deployable {
         outAmount = self.aPrice(msg.amount);
         if (outAmount <= 0) { return; }
         outAddr = self.jA;
-        self.b = self.b + msg.amount; self.a = self.a - outAmount; }
+        self.b = self.b + msg.amount;
+        self.a = self.a - outAmount;
+    }
         send(SendParameters{
                 to: outAddr!!,
                 value: 0,
