@@ -31,7 +31,6 @@ contract Task2 with Deployable {
         to: msg.sender,
         value: 0,
         mode: SendRemainingBalance,
-        bounce: true
      });
   }
 
@@ -39,7 +38,6 @@ contract Task2 with Deployable {
     send(SendParameters{
         to: self.admin,
         value: 0,
-        bounce: true,
         mode: SendRemainingValue,
         body: beginCell().storeSlice(sender().asSlice()).storeRef(msg.asCell()).endCell()
     });

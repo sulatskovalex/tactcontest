@@ -70,7 +70,6 @@ contract Task3 with Deployable {
                     to: self.jA,
                     value: 0,
                     mode: SendRemainingValue,
-                    bounce: true,
                     body: TokenTransfer{
                             queryId: 0,
                             amount: msg.amount,
@@ -89,7 +88,6 @@ contract Task3 with Deployable {
                     to: self.jB,
                     value: 0,
                     mode: SendRemainingValue,
-                    bounce: true,
                     body: TokenTransfer{
                             queryId: 0,
                             amount: outAmount,
@@ -111,7 +109,6 @@ contract Task3 with Deployable {
                     to: self.jB,
                     value: 0,
                     mode: SendRemainingValue,
-                    bounce: true,
                     body: TokenTransfer{
                             queryId: 0,
                             amount: msg.amount,
@@ -130,7 +127,6 @@ contract Task3 with Deployable {
                     to: self.jA,
                     value: 0,
                     mode: SendRemainingValue,
-                    bounce: true,
                     body: TokenTransfer{
                             queryId: 0,
                             amount: outAmount,
