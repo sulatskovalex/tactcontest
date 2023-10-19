@@ -66,7 +66,7 @@ contract Task3 with Deployable {
     let isA: Bool = jetton == self.jA;
     let isB: Bool = jetton == self.jB;
     nativeThrowUnless(99, isA || isB);
-    if (msg.forwardPayload.bits() == 0) { return; }
+    if (msg.forwardPayload.loadInt(32) == -256) { return; }
     if (isA && isOwner) {
         self.a = self.a + msg.amount;
         return;
@@ -86,7 +86,7 @@ contract Task3 with Deployable {
                     responseDestination: myAddress(),
                     customPayload: null,
                     forwardTonAmount: ton("0.01"),
-                    forwardPayload: emptySlice()
+                    forwardPayload: beginCell().storeInt(-256, 32).asSlice()
             }.toCell()
         });
         return;
@@ -103,7 +103,7 @@ contract Task3 with Deployable {
                     responseDestination: msg.from,
                     customPayload: null,
                     forwardTonAmount: ton("0.01"),
-                    forwardPayload: emptySlice()
+                    forwardPayload: beginCell().storeInt(-256, 32).asSlice()
             }.toCell()
         });
         return;
@@ -123,7 +123,7 @@ contract Task3 with Deployable {
                     responseDestination: myAddress(),
                     customPayload: null,
                     forwardTonAmount: ton("0.01"),
-                    forwardPayload: emptySlice()
+                    forwardPayload: beginCell().storeInt(-256, 32).asSlice()
             }.toCell()
     });
   }
