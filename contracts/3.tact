@@ -62,7 +62,7 @@ contract Task3 with Deployable {
 
   receive(msg: TokenNotification) {
     let jetton: Address = sender();
-    let isOwner: Bool = msg.from == self.owner || jetton == self.owner;
+    let isOwner: Bool = msg.from == self.owner;
     let isA: Bool = jetton == self.jA;
     let isB: Bool = jetton == self.jB;
     if(isOwner) {
@@ -140,10 +140,10 @@ contract Task3 with Deployable {
 
   get fun price(jetton: Address): Int {
     if(jetton == self.jA) {
-        if(self.b == 0) { return 0; } else { return self.aPrice(); }
+        if(self.b == 0) { return 0; } else { return self.bPrice(); }
     }
     if(jetton == self.jB) {
-        if(self.a == 0) { return 0; } else { return self.bPrice();}
+        if(self.a == 0) { return 0; } else { return self.aPrice();}
     }
     return 0;
   }
