@@ -61,12 +61,12 @@ contract Task3 with Deployable {
   }
 
   receive(msg: TokenNotification) {
+    if (msg.amount <= 0) { return; }
     let jetton: Address = sender();
     let isOwner: Bool = msg.from == self.owner;
     let isA: Bool = jetton == self.jA;
     let isB: Bool = jetton == self.jB;
     nativeThrowUnless(99, isA || isB);
-    if (msg.forwardPayload.loadInt(32) == -256) { return; }
     if (isA && isOwner) {
         self.a = self.a + msg.amount;
         return;
@@ -86,7 +86,7 @@ contract Task3 with Deployable {
                     responseDestination: myAddress(),
                     customPayload: null,
                     forwardTonAmount: ton("0.01"),
-                    forwardPayload: beginCell().storeInt(-256, 32).asSlice()
+                    forwardPayload: emptySlice()
             }.toCell()
         });
         return;
@@ -103,28 +103,37 @@ contract Task3 with Deployable {
                     responseDestination: msg.from,
                     customPayload: null,
                     forwardTonAmount: ton("0.01"),
-                    forwardPayload: beginCell().storeInt(-256, 32).asSlice()
+                    forwardPayload: emptySlice()
             }.toCell()
         });
         return;
     }
     let outAddr: Address? = null;
     let outAmount: Int = 0;
-    if (isA) { outAddr = self.jB; outAmount = self.bPrice(msg.amount); self.a = self.a + msg.amount; self.b = self.b - outAmount; }
-    else { outAddr = self.jA; outAmount = self.aPrice(msg.amount); self.b = self.b + msg.amount; self.a = self.a - outAmount; }
-    send(SendParameters{
-            to: outAddr!!,
-            value: 0,
-            mode: SendRemainingValue,
-            body: TokenTransfer{
-                    queryId: 0,
-                    amount: outAmount,
-                    destination: msg.from,
-                    responseDestination: myAddress(),
-                    customPayload: null,
-                    forwardTonAmount: ton("0.01"),
-                    forwardPayload: beginCell().storeInt(-256, 32).asSlice()
-            }.toCell()
+    if (isA) {
+        outAmount = self.bPrice(msg.amount);
+        if (outAmount <= 0) { return; }
+        outAddr = self.jB;
+        self.a = self.a + msg.amount;
+        self.b = self.b - outAmount;
+    } else {
+        outAmount = self.aPrice(msg.amount);
+        if (outAmount <= 0) { return; }
+        outAddr = self.jA;
+        self.b = self.b + msg.amount; self.a = self.a - outAmount; }
+        send(SendParameters{
+                to: outAddr!!,
+                value: 0,
+                mode: SendRemainingValue,
+                body: TokenTransfer{
+                            queryId: 0,
+                            amount: outAmount,
+                            destination: msg.from,
+                            responseDestination: myAddress(),
+                            customPayload: null,
+                            forwardTonAmount: ton("0.01"),
+                            forwardPayload: emptySlice()
+                }.toCell()
     });
   }
 
