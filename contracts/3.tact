@@ -64,7 +64,7 @@ contract Task3 with Deployable {
     let jetton: Address = sender();
     let isA: Bool = jetton == self.jA;
     let isB: Bool = jetton == self.jB;
-    if(!isA && !isB) { nativeThrow(98); }
+    if(!isA && !isB) { nativeThrow(99); }
     let isOwner: Bool = msg.from == self.owner;
     if(isOwner) {
         if (isA) {
@@ -72,9 +72,11 @@ contract Task3 with Deployable {
         } else if(isB) {
             self.b = self.b + msg.amount;
         } else {
-            nativeThrow(99);
+            nativeThrow(98);
         }
         return;
+    } else {
+        nativeThrow(97);
     }
     if((isA && self.a <= self.amountOfAJettonToSend(msg.amount)) || (isB && self.b <= self.amountOfBJettonToSend(msg.amount))) {
         self.sendJetton(jetton, msg.amount, msg.from);
