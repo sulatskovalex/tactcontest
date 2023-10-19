@@ -66,7 +66,6 @@ contract Task3 with Deployable {
         if(msg.from == self.owner) {
             self.a = self.a + msg.amount;
         } else if(self.a == 0 || self.a <= (msg.amount * ((self.a * self.decimal) / self.b)) / self.decimal) {
-            self.sendJetton(self.jA, msg.amount, msg.from);
             send(SendParameters{
                     to: self.jA,
                     value: 0,
