@@ -74,7 +74,7 @@ contract Task3 with Deployable {
         self.b = self.b + msg.amount;
         return;
     }
-/*    if(self.a == 0 || self.b == 0) {
+    if(self.a == 0 || self.b == 0) {
         send(SendParameters{
             to: jetton,
             value: 0,
@@ -94,6 +94,7 @@ contract Task3 with Deployable {
         send(SendParameters{
             to: jetton,
             value: 0,
+            mode: SendRemainingValue,
             body: TokenTransfer{
                     queryId: 0,
                     amount: msg.amount,
@@ -113,6 +114,7 @@ contract Task3 with Deployable {
     send(SendParameters{
             to: outAddr!!,
             value: 0,
+            mode: SendRemainingValue,
             body: TokenTransfer{
                     queryId: 0,
                     amount: outAmount,
@@ -122,7 +124,7 @@ contract Task3 with Deployable {
                     forwardTonAmount: ton("0.01"),
                     forwardPayload: emptySlice()
             }.toCell()
-    });*/
+    });
   }
 
   fun aPrice(amount: Int): Int {
