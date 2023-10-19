@@ -62,7 +62,7 @@ contract Task3 with Deployable {
 
   receive(msg: TokenNotification) {
     if (msg.amount <= 0) { return; }
-    let jetton: Address = sender();
+/*    let jetton: Address = sender();
     let isOwner: Bool = msg.from == self.owner;
     let isA: Bool = jetton == self.jA;
     let isB: Bool = jetton == self.jB;
@@ -134,7 +134,7 @@ contract Task3 with Deployable {
                             forwardTonAmount: ton("0.01"),
                             forwardPayload: emptySlice()
                 }.toCell()
-    });
+    });*/
   }
 
   fun aPrice(amount: Int): Int {
