@@ -76,8 +76,8 @@ contract Task3 with Deployable {
         }
         return;
     }
-    if(msg.from == self.jA) { self.a = self.a + msg.amount; return;
-    } else if (msg.from == self.jB) { self.b = self.b + msg.amount; return; }
+    if(msg.from == self.jA) { self.a = self.a - msg.amount; return;
+    } else if (msg.from == self.jB) { self.b = self.b - msg.amount; return; }
     if(self.a <= 0 || self.b <= 0 || (isA && self.b < self.bOutAmount(msg.amount)) || (isB && self.a < self.aOutAmount(msg.amount))) {
         send(SendParameters{
                 to: jetton,
