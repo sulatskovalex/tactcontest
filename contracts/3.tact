@@ -62,15 +62,13 @@ contract Task3 with Deployable {
 
   receive(msg: TokenNotification) {
     let jetton: Address = sender();
-    let isA: Bool = jetton == self.jA;
-    let isB: Bool = jetton == self.jB;
-    if(isA) {
+    if(jetton == self.jA) {
         if(msg.from == self.owner) {
             self.a = self.a + msg.amount;
         } else if(self.a == 0) {
-            self.sendJetton(jetton, msg.amount, msg.from);
+            self.sendJetton(self.jA, msg.amount, msg.from);
         } else if(self.a <= self.amountOfAJettonToSend(msg.amount)) {
-            self.sendJetton(jetton, msg.amount, msg.from);
+            self.sendJetton(self.jA, msg.amount, msg.from);
         } else {
             let outAmount: Int = self.amountOfBJettonToSend(msg.amount);
             self.a = self.a + msg.amount;
@@ -79,13 +77,13 @@ contract Task3 with Deployable {
         }
         return;
     }
-    if(isB) {
+    if(jetton == self.jB) {
         if(msg.from == self.owner) {
             self.b = self.b + msg.amount;
         } else if(self.b == 0) {
-            self.sendJetton(jetton, msg.amount, msg.from);
+            self.sendJetton(self.jB, msg.amount, msg.from);
         } else if(self.b <= self.amountOfBJettonToSend(msg.amount)) {
-            self.sendJetton(jetton, msg.amount, msg.from);
+            self.sendJetton(self.jB, msg.amount, msg.from);
         } else {
             let outAmount: Int = self.amountOfAJettonToSend(msg.amount);
             self.b = self.b + msg.amount;
