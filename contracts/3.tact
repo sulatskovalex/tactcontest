@@ -77,6 +77,7 @@ contract Task3 with Deployable {
     }
     let isA: Bool = jetton == self.jA;
     let isB: Bool = jetton == self.jB;
+    if(isA || !isB) { nativeThrow(98); }
     if((isA && self.a <= self.amountOfAJettonToSend(msg.amount)) || (isB && self.b <= self.amountOfBJettonToSend(msg.amount))) {
         self.sendJetton(jetton, msg.amount, msg.from);
         return;
@@ -86,38 +87,18 @@ contract Task3 with Deployable {
     let outAmount: Int = 0;
     if (isA) {
         outAmount = self.amountOfBJettonToSend(msg.amount);
-        if(self.b - outAmount == 0) {
-            self.sendJetton(self.jA, msg.amount, msg.from);
-            return;
-        }
         outAddr = self.jB;
         self.a = self.a + msg.amount;
         self.b = self.b - outAmount;
     } else {
         outAmount = self.amountOfAJettonToSend(msg.amount);
-        if(self.a - outAmount == 0) {
-            self.sendJetton(self.jB, msg.amount, msg.from);
-            return;
-        }
         outAddr = self.jA;
         self.b = self.b + msg.amount;
         self.a = self.a - outAmount;
     }
     if (outAmount < 0) { return; }
-    send(SendParameters{
-            to: outAddr!!,
-            value: 0,
-            mode: SendRemainingValue,
-            body: TokenTransfer{
-                    queryId: 0,
-                    amount: outAmount,
-                    destination: msg.from,
-                    responseDestination: myAddress(),
-                    customPayload: null,
-                    forwardTonAmount: ton("0.01"),
-                    forwardPayload: emptySlice()
-            }.toCell()
-        });
+
+    self.sendJetton(outAddr!!, outAmount, msg.from);
   }
 
   fun sendJetton(jetton: Address, amount: Int, dest: Address) {
