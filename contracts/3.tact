@@ -76,8 +76,7 @@ contract Task3 with Deployable {
         }
         return;
     }
-    if(msg.from == self.jA) { nativeThrow(97); } else if (msg.from == self.jB) { nativeThrow(97); }
-    if(self.a <= 0 || self.b <= 0 || (isA && self.b < self.bOutAmount(msg.amount)) || (isB && self.a < self.aOutAmount(msg.amount))) {
+    if(msg.from == self.jA || msg.from == self.jB || self.a <= 0 || self.b <= 0 || (isA && self.b < self.bOutAmount(msg.amount)) || (isB && self.a < self.aOutAmount(msg.amount))) {
         send(SendParameters{
                 to: jetton,
                 value: 0,
