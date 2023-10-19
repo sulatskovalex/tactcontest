@@ -74,7 +74,7 @@ contract Task3 with Deployable {
         self.b = self.b + msg.amount;
         return;
     }
-    if(self.a == 0 || self.b == 0) {
+    if((isA && self.a == 0) || (isB && self.b == 0)) {
         send(SendParameters{
             to: jetton,
             value: 0,
