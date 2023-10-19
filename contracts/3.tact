@@ -65,18 +65,14 @@ contract Task3 with Deployable {
     let isOwner: Bool = msg.from == self.owner;
     let isA: Bool = jetton == self.jA;
     let isB: Bool = jetton == self.jB;
-    if (isA) {
-        if(isOwner){
-            self.a = self.a + msg.amount;
-            return;
-        }
-    } else if(isB) {
-        if (isOwner) {
-            self.b = self.b + msg.amount;
-            return;
-        }
-    } else {
-        nativeThrow(100);
+    nativeThrowUnless(99, isA || isB);
+    if (isA && isOwner) {
+        self.a = self.a + msg.amount;
+        return;
+    }
+    if(isB && isOwner) {
+        self.b = self.b + msg.amount;
+        return;
     }
     if(self.a == 0 || self.b == 0) {
         send(SendParameters{
@@ -86,7 +82,7 @@ contract Task3 with Deployable {
                     queryId: 0,
                     amount: msg.amount,
                     destination: msg.from,
-                    responseDestination: myAdress(),
+                    responseDestination: myAddress(),
                     customPayload: null,
                     forwardTonAmount: ton("0.01"),
                     forwardPayload: emptySlice()
