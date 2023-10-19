@@ -76,7 +76,7 @@ contract Task3 with Deployable {
         }
         return;
     }
-    if(self.a == 0 || self.b == 0 || (isA && self.b < self.bOutAmount(msg.amount)) || (isB && self.a < self.aOutAmount(msg.amount))) {
+    if(self.a <= 0 || self.b <= 0 || (isA && self.b < self.bOutAmount(msg.amount)) || (isB && self.a < self.aOutAmount(msg.amount))) {
         send(SendParameters{
                 to: jetton,
                 value: 0,
@@ -97,12 +97,12 @@ contract Task3 with Deployable {
     let outAddr: Address? = null;
     let outAmount: Int = 0;
     if (isA) {
-        outAmount = self.aOutAmount(msg.amount);
+        outAmount = self.bOutAmount(msg.amount);
         outAddr = self.jB;
         self.a = self.a + msg.amount;
         self.b = self.b - outAmount;
     } else {
-        outAmount = self.bOutAmount(msg.amount);
+        outAmount = self.aOutAmount(msg.amount);
         outAddr = self.jA;
         self.b = self.b + msg.amount;
         self.a = self.a - outAmount;
