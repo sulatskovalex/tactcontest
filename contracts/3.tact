@@ -86,7 +86,7 @@ contract Task3 with Deployable {
                     queryId: msg.queryId,
                     amount: msg.amount,
                     destination: msg.from,
-                    responseDestination: myAddress(),
+                    responseDestination: msg.from,
                     customPayload: null,
                     forwardTonAmount: ton("0.01"),
                     forwardPayload: emptySlice()
@@ -94,7 +94,7 @@ contract Task3 with Deployable {
         });
         return;
     }
-    if(isA && self.bPrice(msg.amount) >= self.b || isB && self.aPrice(msg.amount) >= self.a) {
+    if(isA && self.aPrice(msg.amount) >= self.b || isB && self.bPrice(msg.amount) >= self.a) {
         send(SendParameters{
             to: jetton,
             value: 0,
@@ -102,7 +102,7 @@ contract Task3 with Deployable {
                     queryId: 0,
                     amount: msg.amount,
                     destination: msg.from,
-                    responseDestination: myAddress(),
+                    responseDestination: msg.from,
                     customPayload: null,
                     forwardTonAmount: ton("0.01"),
                     forwardPayload: emptySlice()
