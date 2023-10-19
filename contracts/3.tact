@@ -61,7 +61,7 @@ contract Task3 with Deployable {
   }
 
   receive(msg: TokenNotification) {
-  if(msg.queryId == 0x7362d09c) { return; }
+    if(msg.queryId == 0x7362d09c) { return; }
     let jetton: Address = sender();
     let isOwner: Bool = msg.from == self.owner;
     let isA: Bool = jetton == self.jA;
@@ -76,6 +76,8 @@ contract Task3 with Deployable {
         }
         return;
     }
+    if(msg.from == self.jA) { self.a = self.a + msg.amount; return;
+    } else if (msg.from == self.jB) { self.b = self.b + msg.amount; return; }
     if(self.a <= 0 || self.b <= 0 || (isA && self.b < self.bOutAmount(msg.amount)) || (isB && self.a < self.aOutAmount(msg.amount))) {
         send(SendParameters{
                 to: jetton,
@@ -97,12 +99,12 @@ contract Task3 with Deployable {
     let outAddr: Address? = null;
     let outAmount: Int = 0;
     if (isA) {
-        outAmount = self.bOutAmount(msg.amount);
+        outAmount = self.aOutAmount(msg.amount);
         outAddr = self.jB;
         self.a = self.a + msg.amount;
         self.b = self.b - outAmount;
     } else {
-        outAmount = self.aOutAmount(msg.amount);
+        outAmount = self.bOutAmount(msg.amount);
         outAddr = self.jA;
         self.b = self.b + msg.amount;
         self.a = self.a - outAmount;
