@@ -95,7 +95,6 @@ contract Task3 with Deployable {
         send(SendParameters{
             to: jetton,
             value: 0,
-            mode: SendRemainingValue,
             body: TokenTransfer{
                     queryId: 0,
                     amount: msg.amount,
@@ -111,13 +110,13 @@ contract Task3 with Deployable {
     let outAddr: Address? = null;
     let outAmount: Int = 0;
     if (isA) {
-        outAmount = self.aPrice(msg.amount);
+        outAmount = self.bPrice(msg.amount);
         if (outAmount <= 0) { return; }
         outAddr = self.jB;
         self.a = self.a + msg.amount;
         self.b = self.b - outAmount;
     } else {
-        outAmount = self.bPrice(msg.amount);
+        outAmount = self.aPrice(msg.amount);
         if (outAmount <= 0) { return; }
         outAddr = self.jA;
         self.b = self.b + msg.amount;
@@ -126,7 +125,6 @@ contract Task3 with Deployable {
         send(SendParameters{
                 to: outAddr!!,
                 value: 0,
-                mode: SendRemainingValue,
                 body: TokenTransfer{
                             queryId: 0,
                             amount: outAmount,
