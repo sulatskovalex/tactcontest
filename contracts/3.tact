@@ -110,7 +110,7 @@ contract Task3 with Deployable {
     let outAddr: Address? = null;
     let outAmount: Int = 0;
     if (isA) {
-        outAmount = self.self.aOutAmount(msg.amount);
+        outAmount = self.aOutAmount(msg.amount);
         if (outAmount <= 0) { return; }
         outAddr = self.jB;
         self.a = self.a + msg.amount;
