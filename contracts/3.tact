@@ -78,7 +78,7 @@ contract Task3 with Deployable {
     } else {
         nativeThrow(100);
     }
-    if(isA && self.aPrice(msg.amount) >= self.b || isB && self.bPrice(msg.amount) >= self.a) {
+/*    if(isA && self.aPrice(msg.amount) >= self.b || isB && self.bPrice(msg.amount) >= self.a) {
         send(SendParameters{
             to: jetton,
             value: 0,
@@ -93,7 +93,7 @@ contract Task3 with Deployable {
             }.toCell()
         });
         return;
-    }
+    }*/
     let outAddr: Address? = null;
     let outAmount: Int = 0;
     if (isA) { outAddr = self.jB; outAmount = self.bPrice(msg.amount); self.a = self.a + msg.amount; self.b = self.b - outAmount; }
