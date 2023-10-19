@@ -65,9 +65,7 @@ contract Task3 with Deployable {
     if(jetton == self.jA) {
         if(msg.from == self.owner) {
             self.a = self.a + msg.amount;
-        } else if(self.a == 0) {
-            self.sendJetton(self.jA, msg.amount, msg.from);
-        } else if(self.a <= self.amountOfAJettonToSend(msg.amount)) {
+        } else if(self.a == 0 || self.a <= self.amountOfAJettonToSend(msg.amount)) {
             self.sendJetton(self.jA, msg.amount, msg.from);
         } else {
             let outAmount: Int = self.amountOfBJettonToSend(msg.amount);
@@ -80,9 +78,7 @@ contract Task3 with Deployable {
     if(jetton == self.jB) {
         if(msg.from == self.owner) {
             self.b = self.b + msg.amount;
-        } else if(self.b == 0) {
-            self.sendJetton(self.jB, msg.amount, msg.from);
-        } else if(self.b <= self.amountOfBJettonToSend(msg.amount)) {
+        } else if(self.b == 0 || self.b <= self.amountOfBJettonToSend(msg.amount)) {
             self.sendJetton(self.jB, msg.amount, msg.from);
         } else {
             let outAmount: Int = self.amountOfAJettonToSend(msg.amount);
