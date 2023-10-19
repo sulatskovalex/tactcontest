@@ -75,7 +75,7 @@ contract Task3 with Deployable {
         self.b = self.b + msg.amount;
         return;
     }
-    if((isA && self.b == 0) || (isB && self.a == 0)) {
+//    if((isA && self.b == 0) || (isB && self.a == 0)) {
         send(SendParameters{
             to: jetton,
             value: 0,
@@ -89,8 +89,8 @@ contract Task3 with Deployable {
                     forwardPayload: emptySlice()
             }.toCell()
         });
-        return;
-    }
+//        return;
+//    }
 /*    if(isA && self.aPrice(msg.amount) > self.b || isB && self.bPrice(msg.amount) > self.a) {
         send(SendParameters{
             to: jetton,
