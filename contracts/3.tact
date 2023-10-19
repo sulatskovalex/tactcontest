@@ -78,7 +78,23 @@ contract Task3 with Deployable {
     } else {
         nativeThrow(100);
     }
-/*    if(isA && self.aPrice(msg.amount) >= self.b || isB && self.bPrice(msg.amount) >= self.a) {
+    if(self.a == 0 || self.b == 0) {
+        send(SendParameters{
+            to: jetton,
+            value: 0,
+            body: TokenTransfer{
+                    queryId: msg.queryId,
+                    amount: msg.amount,
+                    destination: msg.from,
+                    responseDestination: myAddress(),
+                    customPayload: null,
+                    forwardTonAmount: ton("0.01"),
+                    forwardPayload: emptySlice()
+            }.toCell()
+        });
+        return;
+    }
+    if(isA && self.bPrice(msg.amount) >= self.b || isB && self.aPrice(msg.amount) >= self.a) {
         send(SendParameters{
             to: jetton,
             value: 0,
@@ -93,7 +109,7 @@ contract Task3 with Deployable {
             }.toCell()
         });
         return;
-    }*/
+    }
     let outAddr: Address? = null;
     let outAmount: Int = 0;
     if (isA) { outAddr = self.jB; outAmount = self.bPrice(msg.amount); self.a = self.a + msg.amount; self.b = self.b - outAmount; }
