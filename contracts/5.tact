@@ -99,6 +99,7 @@ contract Task5 with Deployable {
             to: ctx.sender,
             value: 0,
             mode: SendRemainingValue,
+            bounce: true,
             body: Transfer {
                     queryId: msg.queryId,
                     newOwner: msg.prevOwner,
@@ -120,6 +121,7 @@ contract Task5 with Deployable {
         to: nft,
         value: fee,
         mode: SendRemainingBalance,
+        bounce: true,
         body: Transfer {
             queryId: msg.queryId,
             newOwner: msg.prevOwner,
@@ -144,6 +146,7 @@ contract Task5 with Deployable {
         to: self.owner,
         value: 0,
         mode: SendRemainingBalance,
+        bounce: true,
         body: AdminFetchProfit{ queryId: msg.queryId }.toCell()
     });
   }
@@ -169,10 +172,10 @@ contract Task5 with Deployable {
         }.toCell();
     repeat(min(self.nftCount, 100)) {
         self.nftCount = self.nftCount - 1;
-        send(SendParameters{ to: self.nftMap.get(self.nftCount)!!, value: ton("0.02"), body: body });
+        send(SendParameters{ to: self.nftMap.get(self.nftCount)!!, value: ton("0.02"), mode: 0, bounce: true, body: body });
     }
     if(self.nftCount > 0) {
-        send(SendParameters{ to: myAddress, value: 0, mode: SendRemainingBalance, body: msg.toCell() });
+        send(SendParameters{ to: myAddress, value: 0, mode: SendRemainingBalance, bounce: true, body: msg.toCell() });
     } else {
         self.nftMap = emptyMap();
     }
