@@ -65,10 +65,10 @@ contract Task3 with Deployable {
     if(jetton == self.jA) {
         if(msg.from == self.owner) {
             self.a = self.a + msg.amount;
-        } else if(self.a == 0 || self.a <= self.amountOfAJettonToSend(msg.amount)) {
+        } else if(self.a == 0 || self.a <= (msg.amount * ((self.a * self.decimal) / self.b)) / self.decimal) {
             self.sendJetton(self.jA, msg.amount, msg.from);
         } else {
-            let outAmount: Int = self.amountOfBJettonToSend(msg.amount);
+            let outAmount: Int = (msg.amount * ((self.b * self.decimal) / self.a)) / self.decimal;
             self.a = self.a + msg.amount;
             self.b = self.b - outAmount;
             self.sendJetton(self.jB, outAmount, msg.from);
@@ -78,10 +78,10 @@ contract Task3 with Deployable {
     if(jetton == self.jB) {
         if(msg.from == self.owner) {
             self.b = self.b + msg.amount;
-        } else if(self.b == 0 || self.b <= self.amountOfBJettonToSend(msg.amount)) {
+        } else if(self.b == 0 || self.b <= (msg.amount * ((self.b * self.decimal) / self.a)) / self.decimal) {
             self.sendJetton(self.jB, msg.amount, msg.from);
         } else {
-            let outAmount: Int = self.amountOfAJettonToSend(msg.amount);
+            let outAmount: Int = (msg.amount * ((self.a * self.decimal) / self.b)) / self.decimal;
             self.b = self.b + msg.amount;
             self.a = self.a - outAmount;
             self.sendJetton(self.jA, outAmount, msg.from);
@@ -106,14 +106,6 @@ contract Task3 with Deployable {
                   forwardPayload: emptySlice()
           }.toCell()
     });
-  }
-
-  fun amountOfBJettonToSend(amount: Int): Int {
-    return (amount * ((self.b * self.decimal) / self.a)) / self.decimal;
-  }
-
-  fun amountOfAJettonToSend(amount: Int): Int {
-    return (amount * ((self.a * self.decimal) / self.b)) / self.decimal;
   }
 
   get fun price(jetton: Address): Int {
