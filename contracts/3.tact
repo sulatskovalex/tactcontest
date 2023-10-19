@@ -76,27 +76,22 @@ contract Task3 with Deployable {
         }
         return;
     }
-    if((isA && self.a < self.amountOfAJettonToSend(msg.amount)) || (isB && self.b < self.amountOfBJettonToSend(msg.amount))) {
+    if((isA && self.a <= self.amountOfAJettonToSend(msg.amount)) || (isB && self.b <= self.amountOfBJettonToSend(msg.amount))) {
         self.sendJetton(jetton, msg.amount, msg.from);
         return;
     }
 
-    let outAddr: Address? = null;
-    let outAmount: Int = 0;
     if (isA) {
-        outAmount = self.amountOfBJettonToSend(msg.amount);
-        outAddr = self.jB;
+        let outAmount = self.amountOfBJettonToSend(msg.amount);
         self.a = self.a + msg.amount;
         self.b = self.b - outAmount;
+        self.sendJetton(self.jB, outAmount, msg.from);
     } else {
-        outAmount = self.amountOfAJettonToSend(msg.amount);
-        outAddr = self.jA;
+        let outAmount = self.amountOfAJettonToSend(msg.amount);
         self.b = self.b + msg.amount;
         self.a = self.a - outAmount;
+        self.sendJetton(self.jA, outAmount, msg.from);
     }
-    if (outAmount < 0) { return; }
-
-    self.sendJetton(outAddr!!, outAmount, msg.from);
   }
 
   fun sendJetton(jetton: Address, amount: Int, dest: Address) {
