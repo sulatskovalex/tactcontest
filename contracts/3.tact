@@ -67,7 +67,7 @@ contract Task3 with Deployable {
     let isA: Bool = jetton == self.jA;
     let isB: Bool = jetton == self.jB;
     nativeThrowUnless(99, isA || isB);
-/*    if (isA && isOwner) {
+    if (isA && isOwner) {
         self.a = self.a + msg.amount;
         return;
     }
@@ -75,7 +75,7 @@ contract Task3 with Deployable {
         self.b = self.b + msg.amount;
         return;
     }
-    if((isA && self.b == 0) || (isB && self.a == 0)) {
+/*    if((isA && self.b == 0) || (isB && self.a == 0)) {
         send(SendParameters{
             to: jetton,
             value: 0,
