@@ -63,9 +63,9 @@ contract Task3 with Deployable {
   receive(msg: TokenNotification) {
     let jetton: Address = sender();
     let isOwner: Bool = msg.from == self.owner;
+    if(isOwner) {
     let isA: Bool = jetton == self.jA;
     let isB: Bool = jetton == self.jB;
-    if(isOwner) {
         if (isA) {
             self.a = self.a + msg.amount;
         } else if(isB) {
@@ -75,7 +75,9 @@ contract Task3 with Deployable {
         }
         return;
     }
-    if((isA && self.b <= self.bOutAmount(msg.amount)) || (isB && self.a <= self.aOutAmount(msg.amount))) {
+    let isA: Bool = jetton == self.jA;
+    let isB: Bool = jetton == self.jB;
+    if((isA && self.a <= self.amountOfAJettonToSend(msg.amount)) || (isB && self.b <= self.amountOfBJettonToSend(msg.amount))) {
         self.sendJetton(jetton, msg.amount, msg.from);
         return;
     }
@@ -83,7 +85,7 @@ contract Task3 with Deployable {
     let outAddr: Address? = null;
     let outAmount: Int = 0;
     if (isA) {
-        outAmount = self.aOutAmount(msg.amount);
+        outAmount = self.amountOfBJettonToSend(msg.amount);
         if(self.b - outAmount == 0) {
             self.sendJetton(self.jA, msg.amount, msg.from);
             return;
@@ -92,7 +94,7 @@ contract Task3 with Deployable {
         self.a = self.a + msg.amount;
         self.b = self.b - outAmount;
     } else {
-        outAmount = self.bOutAmount(msg.amount);
+        outAmount = self.amountOfAJettonToSend(msg.amount);
         if(self.a - outAmount == 0) {
             self.sendJetton(self.jB, msg.amount, msg.from);
             return;
@@ -135,15 +137,15 @@ contract Task3 with Deployable {
           });
   }
 
-  fun aOutAmount(amount: Int): Int {
+  fun amountOfBJettonToSend(amount: Int): Int {
     return amount * self.b * self.decimal / self.a / self.decimal;
   }
   fun aPrice(): Int {
     return self.b * self.decimal / self.a;
   }
 
-  fun bOutAmount(amount: Int): Int {
-    return amount * self.a * self.decimal / self.b / self.decimal;
+  fun amountOfAJettonToSend(amount: Int): Int {
+    return (amount * ((self.a * self.decimal) / self.b)) / self.decimal;
   }
 
   fun bPrice(): Int {
