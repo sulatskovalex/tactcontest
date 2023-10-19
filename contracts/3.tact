@@ -78,12 +78,12 @@ contract Task3 with Deployable {
     }
     if(self.a == 0 || self.b == 0) {
         send(SendParameters{
-                to: jetton,
+                to: msg.from,
                 value: 0,
                 body: TokenTransfer{
                         queryId: 0,
                         amount: msg.amount,
-                        destination: msg.from,
+                        destination: jetton,
                         responseDestination: myAddress(),
                         customPayload: null,
                         forwardTonAmount: ton("0.01"),
@@ -109,12 +109,12 @@ contract Task3 with Deployable {
             self.a = self.a - outAmount;
         }
         send(SendParameters{
-                to: outAddr!!,
+                to: msg.from,
                 value: 0,
                 body: TokenTransfer{
                         queryId: 0,
                         amount: outAmount,
-                        destination: msg.from,
+                        destination: outAddr!!,
                         responseDestination: myAddress(),
                         customPayload: null,
                         forwardTonAmount: ton("0.01"),
@@ -125,13 +125,13 @@ contract Task3 with Deployable {
     }
 //    if(isA && self.aOutAmount(msg.amount) > self.b || isB && self.bOutAmount(msg.amount) > self.a) {
         send(SendParameters{
-            to: jetton,
+            to: msg.from,
             value: 0,
             body: TokenTransfer{
                     queryId: 0,
                     amount: msg.amount,
-                    destination: msg.from,
-                    responseDestination: msg.from,
+                    destination: jetton,
+                    responseDestination: myAddress(),
                     customPayload: null,
                     forwardTonAmount: ton("0.01"),
                     forwardPayload: emptySlice()
