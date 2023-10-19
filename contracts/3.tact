@@ -75,10 +75,8 @@ contract Task3 with Deployable {
             nativeThrow(98);
         }
         return;
-    } else {
-        nativeThrow(97);
     }
-    if((isA && self.a <= self.amountOfAJettonToSend(msg.amount)) || (isB && self.b <= self.amountOfBJettonToSend(msg.amount))) {
+    if((isA && self.a < self.amountOfAJettonToSend(msg.amount)) || (isB && self.b < self.amountOfBJettonToSend(msg.amount))) {
         self.sendJetton(jetton, msg.amount, msg.from);
         return;
     }
