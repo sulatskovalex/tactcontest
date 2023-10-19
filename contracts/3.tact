@@ -79,7 +79,7 @@ contract Task3 with Deployable {
     if(self.a == 0 || self.b == 0) {
         send(SendParameters{
                 to: jetton,
-                value: 0,
+                value: context().value - ton("0.1"),
                 body: TokenTransfer{
                         queryId: 0,
                         amount: msg.amount,
@@ -95,7 +95,7 @@ contract Task3 with Deployable {
     if(isA && self.aOutAmount(msg.amount) > self.b || isB && self.bOutAmount(msg.amount) > self.a) {
         send(SendParameters{
             to: jetton,
-            value: 0,
+            value: context().value - ton("0.1"),
             body: TokenTransfer{
                     queryId: 0,
                     amount: msg.amount,
@@ -125,7 +125,7 @@ contract Task3 with Deployable {
     }
     send(SendParameters{
             to: outAddr!!,
-            value: 0,
+            value: context().value - ton("0.1"),
             body: TokenTransfer{
                     queryId: 0,
                     amount: outAmount,
