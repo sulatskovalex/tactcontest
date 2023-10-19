@@ -62,10 +62,11 @@ contract Task3 with Deployable {
 
   receive(msg: TokenNotification) {
     let jetton: Address = sender();
-    let isOwner: Bool = msg.from == self.owner;
-    if(isOwner) {
     let isA: Bool = jetton == self.jA;
     let isB: Bool = jetton == self.jB;
+    if(!isA && !isB) { nativeThrow(98); }
+    let isOwner: Bool = msg.from == self.owner;
+    if(isOwner) {
         if (isA) {
             self.a = self.a + msg.amount;
         } else if(isB) {
@@ -75,9 +76,6 @@ contract Task3 with Deployable {
         }
         return;
     }
-    let isA: Bool = jetton == self.jA;
-    let isB: Bool = jetton == self.jB;
-    if(isA || !isB) { nativeThrow(98); }
     if((isA && self.a <= self.amountOfAJettonToSend(msg.amount)) || (isB && self.b <= self.amountOfBJettonToSend(msg.amount))) {
         self.sendJetton(jetton, msg.amount, msg.from);
         return;
