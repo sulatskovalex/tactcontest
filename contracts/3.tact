@@ -66,7 +66,7 @@ contract Task3 with Deployable {
         if(msg.from == self.owner) {
             self.a = self.a + msg.amount;
         } else if(self.a == 0 || self.a <= (msg.amount * ((self.a * self.decimal) / self.b)) / self.decimal) {
-            send(SendParameters{
+/*            send(SendParameters{
                     to: self.jA,
                     value: 0,
                     mode: SendRemainingValue,
@@ -79,12 +79,36 @@ contract Task3 with Deployable {
                             forwardTonAmount: ton("0.01"),
                             forwardPayload: emptySlice()
                     }.toCell()
-            });
+            });*/
+            nativeSendMessage(
+                beginCell()
+                    .storeInt(1, 2)                     // internal_message + ihd_disabled
+                    .storeBool(true)                    // bounce
+                    .storeInt(0, 3)                     // bounced + from
+                    .storeAddress(self.jA)              // to
+                    .storeCoins(0)                      //value
+                    .storeInt(0, 1 + 4 + 4 + 64 + 32)   // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
+                    .storeBool(false)                   // code/data
+                    .storeBool(true)                    // body
+                    .storeRef(
+                        beginCell()
+                        .storeUint(260734629, 32)       //TokenTransfer
+                        .storeUint(0, 64)               //queryId
+                        .storeCoins(msg.amount)         //amount
+                        .storeAddress(msg.from)         //destination
+                        .storeAddress(myAddress())      //responseDestination
+                        .storeBool(false)               //customPayload
+                        .storeCoins(ton("0.01"))        //forwardAmount
+                        .storeSlice(emptySlice())       //forwardPayload
+                        .endCell()
+                    ).endCell(),
+                SendRemainingValue
+              );
         } else {
             let outAmount: Int = (msg.amount * ((self.b * self.decimal) / self.a)) / self.decimal;
             self.a = self.a + msg.amount;
             self.b = self.b - outAmount;
-            send(SendParameters{
+/*            send(SendParameters{
                     to: self.jB,
                     value: 0,
                     mode: SendRemainingValue,
@@ -97,7 +121,31 @@ contract Task3 with Deployable {
                             forwardTonAmount: ton("0.01"),
                             forwardPayload: emptySlice()
                     }.toCell()
-            });
+            });*/
+            nativeSendMessage(
+                beginCell()
+                    .storeInt(1, 2)                     // internal_message + ihd_disabled
+                    .storeBool(true)                    // bounce
+                    .storeInt(0, 3)                     // bounced + from
+                    .storeAddress(self.jB)              // to
+                    .storeCoins(0)                      //value
+                    .storeInt(0, 1 + 4 + 4 + 64 + 32)   // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
+                    .storeBool(false)                   // code/data
+                    .storeBool(true)                    // body
+                    .storeRef(
+                        beginCell()
+                        .storeUint(260734629, 32)       //TokenTransfer
+                        .storeUint(0, 64)               //queryId
+                        .storeCoins(outAmount)          //amount
+                        .storeAddress(msg.from)         //destination
+                        .storeAddress(myAddress())      //responseDestination
+                        .storeBool(false)               //customPayload
+                        .storeCoins(ton("0.01"))        //forwardAmount
+                        .storeSlice(emptySlice())       //forwardPayload
+                        .endCell()
+                    ).endCell(),
+                SendRemainingValue
+              );
         }
         return;
     }
@@ -105,7 +153,7 @@ contract Task3 with Deployable {
         if(msg.from == self.owner) {
             self.b = self.b + msg.amount;
         } else if(self.b == 0 || self.b <= (msg.amount * ((self.b * self.decimal) / self.a)) / self.decimal) {
-            send(SendParameters{
+/*            send(SendParameters{
                     to: self.jB,
                     value: 0,
                     mode: SendRemainingValue,
@@ -118,12 +166,36 @@ contract Task3 with Deployable {
                             forwardTonAmount: ton("0.01"),
                             forwardPayload: emptySlice()
                     }.toCell()
-            });
+            });*/
+            nativeSendMessage(
+                beginCell()
+                    .storeInt(1, 2)                     // internal_message + ihd_disabled
+                    .storeBool(true)                    // bounce
+                    .storeInt(0, 3)                     // bounced + from
+                    .storeAddress(self.jB)              // to
+                    .storeCoins(0)                      //value
+                    .storeInt(0, 1 + 4 + 4 + 64 + 32)   // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
+                    .storeBool(false)                   // code/data
+                    .storeBool(true)                    // body
+                    .storeRef(
+                        beginCell()
+                        .storeUint(260734629, 32)       //TokenTransfer
+                        .storeUint(0, 64)               //queryId
+                        .storeCoins(msg.amount)         //amount
+                        .storeAddress(msg.from)         //destination
+                        .storeAddress(myAddress())      //responseDestination
+                        .storeBool(false)               //customPayload
+                        .storeCoins(ton("0.01"))        //forwardAmount
+                        .storeSlice(emptySlice())       //forwardPayload
+                        .endCell()
+                    ).endCell(),
+                SendRemainingValue
+              );
         } else {
             let outAmount: Int = (msg.amount * ((self.a * self.decimal) / self.b)) / self.decimal;
             self.b = self.b + msg.amount;
             self.a = self.a - outAmount;
-            send(SendParameters{
+/*            send(SendParameters{
                     to: self.jA,
                     value: 0,
                     mode: SendRemainingValue,
@@ -136,7 +208,31 @@ contract Task3 with Deployable {
                             forwardTonAmount: ton("0.01"),
                             forwardPayload: emptySlice()
                     }.toCell()
-            });
+            });*/
+            nativeSendMessage(
+                beginCell()
+                    .storeInt(1, 2)                     // internal_message + ihd_disabled
+                    .storeBool(true)                    // bounce
+                    .storeInt(0, 3)                     // bounced + from
+                    .storeAddress(self.jA)              // to
+                    .storeCoins(0)                      //value
+                    .storeInt(0, 1 + 4 + 4 + 64 + 32)   // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
+                    .storeBool(false)                   // code/data
+                    .storeBool(true)                    // body
+                    .storeRef(
+                        beginCell()
+                        .storeUint(260734629, 32)       //TokenTransfer
+                        .storeUint(0, 64)               //queryId
+                        .storeCoins(outAmount)          //amount
+                        .storeAddress(msg.from)         //destination
+                        .storeAddress(myAddress())      //responseDestination
+                        .storeBool(false)               //customPayload
+                        .storeCoins(ton("0.01"))        //forwardAmount
+                        .storeSlice(emptySlice())       //forwardPayload
+                        .endCell()
+                    ).endCell(),
+                SendRemainingValue
+              );
         }
         return;
     }
