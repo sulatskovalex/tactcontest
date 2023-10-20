@@ -26,7 +26,7 @@ contract Task2 with Deployable {
   }
   
   receive(msg: Refund) {
-    if(sender() != self.admin) { nativeThrow(132); }
+    nativeThrowUnless(132, sender() == self.admin);
     nativeSendMessage(
         beginCell()
             .storeInt(1, 2) // internal_message + ihd_disabled
