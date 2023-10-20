@@ -111,7 +111,8 @@ contract Task5 with Deployable {
         });
         return;
     }
-    let nftIndex: Int = nativeRandomInterval(max);//random(0, self.nftCount);
+    let nftIndex: Int = nativeRandomInterval(self.nftCount);
+    //random(0, self.nftCount);
     let nft: Address = self.nftMap.get(nftIndex)!!;
     self.nftMap.set(nftIndex, ctx.sender);
     self.nftMap.set(self.nftCount, null);
