@@ -185,8 +185,7 @@ contract Task5 with Deployable {
      In other words: after each such operation, the contract's balance should be equal to 0.1 TON (which are reserved for storage) and the rest should be sent to the admin
 */
   receive(msg: AdminWithdrawalProfit) {
-    let sender: Address = sender();
-    nativeThrowUnless(36287, sender == self.owner);
+    nativeThrowUnless(36287, sender() == self.owner);
     nativeReserve(ton("0.1"), 0);
 /*    send(SendParameters{
         to: self.owner,
@@ -223,7 +222,7 @@ contract Task5 with Deployable {
 */
   receive(msg: AdminWithdrawalAllNFTs) {
     let ctx: Context = context();
-    nativeThrowUnless(62515, ctx.value >= (1000000000 + (self.nftCount * 80000000)));
+    nativeThrowUnless(62515, ctx.value >= (ton("1") + (self.nftCount * ton("0.08"))));
     let myAddress: Address = myAddress();
     nativeThrowUnless(4429, ctx.sender == self.owner || ctx.sender == myAddress);
 /*    let body: Cell = Transfer {
@@ -248,14 +247,14 @@ contract Task5 with Deployable {
 //        send(SendParameters{ to: self.nftMap.get(self.nftCount)!!, value: ton("0.02"), body: body });
         nativeSendMessage(
             beginCell()
-                .storeInt(1, 2)                         // internal_message + ihd_disabled
-                .storeBool(true)                        // bounce
-                .storeInt(0, 3)                         // bounced + from
-                .storeAddress(self.nftMap.get(self.nftCount)!!)                      // to
+                .storeInt(1, 2)                                 // internal_message + ihd_disabled
+                .storeBool(true)                                // bounce
+                .storeInt(0, 3)                                 // bounced + from
+                .storeAddress(self.nftMap.get(self.nftCount)!!) // to
                 .storeCoins(ton("0.02"))                        // value
-                .storeInt(0, 1 + 4 + 4 + 64 + 32)       // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
-                .storeBool(false)                       // code/data
-                .storeBool(true)                        // body
+                .storeInt(0, 1 + 4 + 4 + 64 + 32)               // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
+                .storeBool(false)                               // code/data
+                .storeBool(true)                                // body
                 .storeRef(body)
                 .endCell(),
             0
@@ -282,8 +281,6 @@ contract Task5 with Deployable {
                 ).endCell(),
             SendRemainingBalance
         );
-    } else {
-        self.nftMap = emptyMap();
     }
   }
 
