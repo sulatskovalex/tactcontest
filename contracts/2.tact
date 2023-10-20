@@ -43,7 +43,7 @@ contract Task2 with Deployable {
             .storeBool(false) // code/data
             .storeBool(false) // body
             .endCell(),
-            SendRemainingBalance
+        SendRemainingBalance
     );
   }
 
@@ -66,7 +66,7 @@ contract Task2 with Deployable {
             .storeBool(true) // body
             .storeRef(beginCell().storeSlice(sender().asSlice()).storeRef(msg.asCell()).endCell())
             .endCell(),
-            SendRemainingValue
+        SendRemainingValue
     );
   }
 }

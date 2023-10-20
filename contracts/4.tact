@@ -102,7 +102,7 @@ contract Task4 with Deployable {
     }
     self.lockEndTime = now() + msg.forwardPayload.preloadUint(32);
     self.nftOwner = msg.prevOwner;
-    self.nftAddress = sender();
+    self.nftAddress = sender;
   }
 
   receive(msg: NftWithdrawal) {
