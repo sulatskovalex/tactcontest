@@ -105,7 +105,7 @@ contract Task3 with Deployable {
               );
               return;
         } else {
-            let outAdd: Address = self.jBA;
+            let outAdd: Address = self.jA;
             let outAmount: Int = (msg.amount * ((self.a * self.decimal) / self.b)) / self.decimal;
             if(isA) {
                 outAdd = self.jB;
