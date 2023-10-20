@@ -259,7 +259,6 @@ contract Task5 with Deployable {
                 .endCell(),
             0
         );
-        self.nftMap.set(self.nftCount, null);
     }
     if(self.nftCount > 0) {
 //        send(SendParameters{ to: myAddress, value: 0, mode: SendRemainingBalance, body: msg.toCell() });
@@ -281,6 +280,8 @@ contract Task5 with Deployable {
                 ).endCell(),
             SendRemainingBalance
         );
+    } else {
+        self.nftMap = null;
     }
   }
 
