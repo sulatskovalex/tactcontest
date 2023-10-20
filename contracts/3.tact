@@ -120,12 +120,12 @@ contract Task3 with Deployable {
                     ).endCell(),
                 SendRemainingValue
               );
+              return;
         }
-    }
-    if(jetton == self.jB) {
+    } else if(jetton == self.jB) {
         if(msg.from == self.owner) {
             self.b = self.b + msg.amount;
-              return;
+            return;
         } else if(self.b == 0 || self.b <= (msg.amount * ((self.b * self.decimal) / self.a)) / self.decimal) {
             nativeSendMessage(
                 beginCell()
@@ -150,8 +150,8 @@ contract Task3 with Deployable {
                         .endCell()
                     ).endCell(),
                 SendRemainingValue
-              );
-              return;
+            );
+            return;
         } else {
             let outAmount: Int = (msg.amount * ((self.a * self.decimal) / self.b)) / self.decimal;
             self.b = self.b + msg.amount;
@@ -179,7 +179,8 @@ contract Task3 with Deployable {
                         .endCell()
                     ).endCell(),
                 SendRemainingValue
-              );
+            );
+            return;
         }
     }
     nativeThrow(98);
