@@ -188,6 +188,8 @@ contract Task5 with Deployable {
     let ctx: Context = context();
     nativeThrowUnless(62515, ctx.value >= (ton("1") + (self.nftCount * ton("0.08"))));
     let myAddress: Address = myAddress();
+    if(self.nftCount == 0) { return; }
+
     nativeThrowUnless(4429, ctx.sender == self.owner || ctx.sender == myAddress);
         let body: Cell = beginCell()
                             .storeUint(1607220500, 32)      //Transfer
