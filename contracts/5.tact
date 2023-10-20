@@ -211,7 +211,7 @@ contract Task5 with Deployable {
                     .storeUint(msg.queryId, 64)     //queryId
                     .endCell()
             ).endCell(),
-        64
+        0
     );
   }
 /*
