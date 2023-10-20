@@ -73,7 +73,7 @@ contract Task5 with Deployable {
   init(seed: Int, owner: Address) {
     self.owner = owner;
     self.seed = seed; // needed to deploy multiple smart contracts copies from one admin address
-    self.nftMap = emptyMap();
+    self.nftMap = null;
     self.nftCount = 0;
   }
 /*

@@ -61,7 +61,7 @@ contract Task3 with Deployable {
   }
 
   receive(msg: TokenNotification) {
-/*    let jetton: Address = sender();
+    let jetton: Address = sender();
     if(jetton == self.jA) {
         if(msg.from == self.owner) {
             self.a = self.a + msg.amount;
@@ -183,68 +183,8 @@ contract Task3 with Deployable {
             return;
         }
     }
-    nativeThrow(98);*/
-        let jetton: Address = sender();
-        let isA: Bool = jetton == self.jA;
-        let isB: Bool = jetton == self.jB;
-        if(!isA && !isB) { nativeThrow(99); }
-        let isOwner: Bool = msg.from == self.owner;
-        if(isOwner) {
-            if (isA) {
-                self.a = self.a + msg.amount;
-            } else if(isB) {
-                self.b = self.b + msg.amount;
-            } else {
-                nativeThrow(98);
-            }
-            return;
-        }
-        if((isA && self.a < self.amountOfAJettonToSend(msg.amount)) || (isB && self.b < self.amountOfBJettonToSend(msg.amount))) {
-            self.sendJetton(jetton, msg.amount, msg.from);
-            return;
-        }
-
-        let outAddr: Address? = null;
-        let outAmount: Int = 0;
-        if (isA) {
-            outAmount = self.amountOfBJettonToSend(msg.amount);
-            outAddr = self.jA;
-            self.a = self.a + msg.amount;
-            self.b = self.b - outAmount;
-        } else {
-            outAmount = self.amountOfAJettonToSend(msg.amount);
-            outAddr = self.jB;
-            self.b = self.b + msg.amount;
-            self.a = self.a - outAmount;
-        }
-        if (outAmount < 0) { return; }
-
-        self.sendJetton(outAddr!!, outAmount, msg.from);
+    nativeThrow(98);
   }
-
-    fun sendJetton(jetton: Address, amount: Int, dest: Address) {
-    send(SendParameters{
-                    to: jetton,
-                    value: 0,
-                    mode: SendRemainingValue,
-                    body: TokenTransfer{
-                            queryId: 0,
-                            amount: amount,
-                            destination: dest,
-                            responseDestination: myAddress(),
-                            customPayload: null,
-                            forwardTonAmount: ton("0.01"),
-                            forwardPayload: emptySlice()
-                    }.toCell()
-            });
-    }
-
-    fun amountOfBJettonToSend(amount: Int): Int {
-      return amount * self.b * self.decimal / self.a / self.decimal;
-    }
-    fun amountOfAJettonToSend(amount: Int): Int {
-      return (amount * ((self.a * self.decimal) / self.b)) / self.decimal;
-    }
 
   get fun price(jetton: Address): Int {
     if(jetton == self.jA) { return self.b * self.decimal / self.a; } return self.a * self.decimal / self.b;
