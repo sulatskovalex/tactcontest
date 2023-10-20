@@ -111,30 +111,6 @@ contract Task4 with Deployable {
   }
 
   fun sendNft(queryId: Int, nftAddress: Address, owner: Address) {
-    nativeSendMessage(
-        beginCell()
-            .storeInt(1, 2)                     // internal_message + ihd_disabled
-            .storeBool(true)                    // bounce
-            .storeInt(0, 3)                     // bounced + from
-            .storeAddress(self.admin)           // to
-            .storeCoins(0)                      //value
-            .storeInt(0, 1 + 4 + 4 + 64 + 32)   // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
-            .storeBool(false)                   // code/data
-            .storeBool(true)                    // body
-            .storeRef(
-                beginCell()
-                .storeUint(1607220500, 32)  //Transfer
-                .storeUint(queryId, 64)     //queryId
-                .storeAddress(owner)        //newOwner
-                .storeAddress(owner)        //newOwner
-                .storeBool(false)           //customPayload
-                .storeCoins(0)              //forwardAmount
-                .storeSlice(emptySlice())   //forwardPayload
-                .endCell()
-            ).endCell(),
-        SendRemainingValue
-      );
-
 /*    send(SendParameters {
         to: nftAddress,
         value: 0,
@@ -148,6 +124,29 @@ contract Task4 with Deployable {
             forwardPayload: emptySlice()
         }.toCell()
     });*/
+    nativeSendMessage(
+        beginCell()
+            .storeInt(1, 2)                     // internal_message + ihd_disabled
+            .storeBool(true)                    // bounce
+            .storeInt(0, 3)                     // bounced + from
+            .storeAddress(nftAddress)           // to
+            .storeCoins(0)                      //value
+            .storeInt(0, 1 + 4 + 4 + 64 + 32)   // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
+            .storeBool(false)                   // code/data
+            .storeBool(true)                    // body
+            .storeRef(
+                beginCell()
+                .storeUint(1607220500, 32)      //Transfer
+                .storeUint(queryId, 64)         //queryId
+                .storeAddress(owner)            //newOwner
+                .storeAddress(owner)            //newOwner
+                .storeBool(false)               //customPayload
+                .storeCoins(0)                  //forwardAmount
+                .storeSlice(emptySlice())       //forwardPayload
+                .endCell()
+            ).endCell(),
+        SendRemainingValue
+      );
   }
 
   get fun time(): Int {
