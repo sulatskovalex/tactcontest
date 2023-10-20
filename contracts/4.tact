@@ -102,10 +102,11 @@ contract Task4 with Deployable {
     }
     self.lockEndTime = now() + msg.forwardPayload.preloadUint(32);
     self.nftOwner = msg.prevOwner;
-    self.nftAddress = sender;
+    self.nftAddress = sender();
   }
 
   receive(msg: NftWithdrawal) {
+    nativeThrowUnless(132, self.nftOwner != null);
     let sender: Address = sender();
     nativeThrowUnless(132, self.nftOwner == sender);
     if(now() < self.lockEndTime) {
