@@ -62,10 +62,9 @@ contract Task3 with Deployable {
 
   receive(msg: TokenNotification) {
     let jetton: Address = sender();
-    if(jetton != self.jA && jetton != self.jB) { nativeThrow(98); }
     let isA: Bool = jetton == self.jA;
     if(msg.from == self.owner) {
-        if(isA) {
+        if(jetton == self.jA) {
             self.a = self.a + msg.amount;
             return;
         } else if (jetton == self.jB) {
@@ -74,8 +73,10 @@ contract Task3 with Deployable {
         } else {
             nativeThrow(98);
         }
+    } else if (jetton != self.jA && jetton != self.jB){
+        nativeThrow(98);
     }
-    if(isA && self.a <= (msg.amount * ((self.a * self.decimal) / self.b)) / self.decimal) {//self.a == 0 ||
+    if(self.a <= (msg.amount * ((self.a * self.decimal) / self.b)) / self.decimal) {//self.a == 0 ||
             nativeSendMessage(
                 beginCell()
                     .storeInt(1, 2)                     // internal_message + ihd_disabled
@@ -130,7 +131,7 @@ contract Task3 with Deployable {
         }
             let outAdd: Address = self.jA;
             let outAmount: Int = (msg.amount * ((self.a * self.decimal) / self.b)) / self.decimal;
-            if(isA) {
+            if(jetton == self.jA) {
                 outAdd = self.jB;
                 outAmount = (msg.amount * ((self.b * self.decimal) / self.a)) / self.decimal;
                 self.a = self.a + msg.amount;
