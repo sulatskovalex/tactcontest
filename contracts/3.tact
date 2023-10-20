@@ -65,6 +65,7 @@ contract Task3 with Deployable {
     if(jetton == self.jA) {
         if(msg.from == self.owner) {
             self.a = self.a + msg.amount;
+            return;
         } else if(self.a == 0 || self.a <= (msg.amount * ((self.a * self.decimal) / self.b)) / self.decimal) {
             nativeSendMessage(
                 beginCell()
@@ -90,6 +91,7 @@ contract Task3 with Deployable {
                     ).endCell(),
                 SendRemainingValue
               );
+              return;
         } else {
             let outAmount: Int = (msg.amount * ((self.b * self.decimal) / self.a)) / self.decimal;
             self.a = self.a + msg.amount;
@@ -119,11 +121,11 @@ contract Task3 with Deployable {
                 SendRemainingValue
               );
         }
-        return;
     }
     if(jetton == self.jB) {
         if(msg.from == self.owner) {
             self.b = self.b + msg.amount;
+              return;
         } else if(self.b == 0 || self.b <= (msg.amount * ((self.b * self.decimal) / self.a)) / self.decimal) {
             nativeSendMessage(
                 beginCell()
@@ -149,6 +151,7 @@ contract Task3 with Deployable {
                     ).endCell(),
                 SendRemainingValue
               );
+              return;
         } else {
             let outAmount: Int = (msg.amount * ((self.a * self.decimal) / self.b)) / self.decimal;
             self.b = self.b + msg.amount;
@@ -178,7 +181,6 @@ contract Task3 with Deployable {
                 SendRemainingValue
               );
         }
-        return;
     }
     nativeThrow(98);
   }
