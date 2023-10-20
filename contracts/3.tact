@@ -75,17 +75,13 @@ contract Task3 with Deployable {
             nativeThrow(98);
         }
     }
-    if(self.a <= (msg.amount * ((self.a * self.decimal) / self.b)) / self.decimal || self.b <= (msg.amount * ((self.b * self.decimal) / self.a)) / self.decimal) {//self.a == 0 ||
-        let outAdd: Address = self.jB;
-        if(isA) {
-            outAdd = self.jA;
-        }
+    if(isA && self.a <= (msg.amount * ((self.a * self.decimal) / self.b)) / self.decimal) {//self.a == 0 ||
             nativeSendMessage(
                 beginCell()
                     .storeInt(1, 2)                     // internal_message + ihd_disabled
                     .storeBool(true)                    // bounce
                     .storeInt(0, 3)                     // bounced + from
-                    .storeAddress(outAdd)              // to
+                    .storeAddress(self.jA)              // to
                     .storeCoins(0)                      //value
                     .storeInt(0, 1 + 4 + 4 + 64 + 32)   // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
                     .storeBool(false)                   // code/data
@@ -106,6 +102,32 @@ contract Task3 with Deployable {
               );
               return;
         } else {
+            nativeSendMessage(
+                beginCell()
+                    .storeInt(1, 2)                     // internal_message + ihd_disabled
+                    .storeBool(true)                    // bounce
+                    .storeInt(0, 3)                     // bounced + from
+                    .storeAddress(self.jB)              // to
+                    .storeCoins(0)                      //value
+                    .storeInt(0, 1 + 4 + 4 + 64 + 32)   // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
+                    .storeBool(false)                   // code/data
+                    .storeBool(true)                    // body
+                    .storeRef(
+                        beginCell()
+                        .storeUint(260734629, 32)       //TokenTransfer
+                        .storeUint(0, 64)               //queryId
+                        .storeCoins(msg.amount)         //amount
+                        .storeAddress(msg.from)         //destination
+                        .storeAddress(myAddress())      //responseDestination
+                        .storeBool(false)               //customPayload
+                        .storeCoins(ton("0.01"))        //forwardAmount
+                        .storeSlice(emptySlice())       //forwardPayload
+                        .endCell()
+                    ).endCell(),
+                SendRemainingValue
+              );
+              return;
+        }
             let outAdd: Address = self.jA;
             let outAmount: Int = (msg.amount * ((self.a * self.decimal) / self.b)) / self.decimal;
             if(isA) {
@@ -141,8 +163,7 @@ contract Task3 with Deployable {
                     ).endCell(),
                 SendRemainingValue
               );
-              return;
-        }
+    
   }
 
   get fun price(jetton: Address): Int {
