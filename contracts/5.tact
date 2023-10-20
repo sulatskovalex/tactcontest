@@ -187,7 +187,7 @@ contract Task5 with Deployable {
   receive(msg: AdminWithdrawalProfit) {
     let sender: Address = sender();
     nativeThrowUnless(36287, sender == self.owner);
-//    nativeReserve(ton("0.1"), 0);
+    nativeReserve(ton("0.1"), 0);
 /*    send(SendParameters{
         to: self.owner,
         value: 0,
@@ -201,7 +201,7 @@ contract Task5 with Deployable {
             .storeBool(true)                        // bounce
             .storeInt(0, 3)                         // bounced + from
             .storeAddress(self.owner)                      // to
-            .storeCoins(myBalance() - ton("0.1"))                        // value
+            .storeCoins(0)                        // value
             .storeInt(0, 1 + 4 + 4 + 64 + 32)       // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
             .storeBool(false)                       // code/data
             .storeBool(true)                        // body
@@ -211,7 +211,7 @@ contract Task5 with Deployable {
                     .storeUint(msg.queryId, 64)     //queryId
                     .endCell()
             ).endCell(),
-        0
+        SendRemainingBalance
     );
   }
 /*
