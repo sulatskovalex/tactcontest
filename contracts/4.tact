@@ -79,7 +79,7 @@ contract Task4 with Deployable {
             mode: SendRemainingValue,
             body: "NFT is still locked".asComment()
         });*/
-        let builder: StringBuilder = beginString();
+        let builder: StringBuilder = beginComment();
         builder.append("NFT is still locked");
         nativeSendMessage(
             beginCell()
