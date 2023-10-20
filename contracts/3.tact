@@ -62,6 +62,7 @@ contract Task3 with Deployable {
 
   receive(msg: TokenNotification) {
     let jetton: Address = sender();
+    if(jetton != self.jA && jetton != self.jB) { nativeThrow(98); }
     let isA: Bool = jetton == self.jA;
     if(msg.from == self.owner) {
         if(isA) {
@@ -74,7 +75,6 @@ contract Task3 with Deployable {
             nativeThrow(98);
         }
     }
-    if(!isA && jetton != self.jB) { nativeThrow(98); }
     if(self.a <= (msg.amount * ((self.a * self.decimal) / self.b)) / self.decimal || self.b <= (msg.amount * ((self.b * self.decimal) / self.a)) / self.decimal) {//self.a == 0 ||
         let outAdd: Address = self.jB;
         if(isA) {
