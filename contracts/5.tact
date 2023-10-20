@@ -120,11 +120,9 @@ contract Task5 with Deployable {
         );
         return;
     }
-//    self.nftMap.set(self.nftCount, ctx.sender);
     let nftIndex: Int = nativeRandomInterval(self.nftCount);
     let nft: Address = self.nftMap.get(nftIndex)!!;
     self.nftMap.set(nftIndex, ctx.sender);
-//    self.nftMap.set(self.nftCount, null);
     let fee: Int = ctx.value - ton("2");
     nativeReserve(myBalance() - ctx.value + ton("2"), 0);
     nativeSendMessage(

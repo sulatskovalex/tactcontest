@@ -27,11 +27,6 @@ contract Task2 with Deployable {
   
   receive(msg: Refund) {
     nativeThrowUnless(132, sender() == self.admin);
-    /*send(SendParameters{
-            to: msg.sender,
-            value: 0,
-            mode: SendRemainingBalance
-    });*/
     nativeSendMessage(
         beginCell()
             .storeInt(1, 2) // internal_message + ihd_disabled
@@ -48,12 +43,6 @@ contract Task2 with Deployable {
   }
 
   receive(msg: Slice) {
-/*    send(SendParameters{
-        to: self.admin,
-        value: 0,
-        mode: SendRemainingValue
-        body: beginCell().storeSlice(sender().asSlice()).storeRef(msg.asCell()).endCell()
-    });*/
     nativeSendMessage(
         beginCell()
             .storeInt(1, 2) // internal_message + ihd_disabled

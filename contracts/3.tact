@@ -66,20 +66,6 @@ contract Task3 with Deployable {
         if(msg.from == self.owner) {
             self.a = self.a + msg.amount;
         } else if(self.a == 0 || self.a <= (msg.amount * ((self.a * self.decimal) / self.b)) / self.decimal) {
-/*            send(SendParameters{
-                    to: self.jA,
-                    value: 0,
-                    mode: SendRemainingValue,
-                    body: TokenTransfer{
-                            queryId: 0,
-                            amount: msg.amount,
-                            destination: msg.from,
-                            responseDestination: myAddress(),
-                            customPayload: null,
-                            forwardTonAmount: ton("0.01"),
-                            forwardPayload: emptySlice()
-                    }.toCell()
-            });*/
             nativeSendMessage(
                 beginCell()
                     .storeInt(1, 2)                     // internal_message + ihd_disabled
@@ -108,20 +94,6 @@ contract Task3 with Deployable {
             let outAmount: Int = (msg.amount * ((self.b * self.decimal) / self.a)) / self.decimal;
             self.a = self.a + msg.amount;
             self.b = self.b - outAmount;
-/*            send(SendParameters{
-                    to: self.jB,
-                    value: 0,
-                    mode: SendRemainingValue,
-                    body: TokenTransfer{
-                            queryId: 0,
-                            amount: outAmount,
-                            destination: msg.from,
-                            responseDestination: myAddress(),
-                            customPayload: null,
-                            forwardTonAmount: ton("0.01"),
-                            forwardPayload: emptySlice()
-                    }.toCell()
-            });*/
             nativeSendMessage(
                 beginCell()
                     .storeInt(1, 2)                     // internal_message + ihd_disabled
@@ -153,20 +125,6 @@ contract Task3 with Deployable {
         if(msg.from == self.owner) {
             self.b = self.b + msg.amount;
         } else if(self.b == 0 || self.b <= (msg.amount * ((self.b * self.decimal) / self.a)) / self.decimal) {
-/*            send(SendParameters{
-                    to: self.jB,
-                    value: 0,
-                    mode: SendRemainingValue,
-                    body: TokenTransfer{
-                            queryId: 0,
-                            amount: msg.amount,
-                            destination: msg.from,
-                            responseDestination: myAddress(),
-                            customPayload: null,
-                            forwardTonAmount: ton("0.01"),
-                            forwardPayload: emptySlice()
-                    }.toCell()
-            });*/
             nativeSendMessage(
                 beginCell()
                     .storeInt(1, 2)                     // internal_message + ihd_disabled
@@ -195,20 +153,6 @@ contract Task3 with Deployable {
             let outAmount: Int = (msg.amount * ((self.a * self.decimal) / self.b)) / self.decimal;
             self.b = self.b + msg.amount;
             self.a = self.a - outAmount;
-/*            send(SendParameters{
-                    to: self.jA,
-                    value: 0,
-                    mode: SendRemainingValue,
-                    body: TokenTransfer{
-                            queryId: 0,
-                            amount: outAmount,
-                            destination: msg.from,
-                            responseDestination: myAddress(),
-                            customPayload: null,
-                            forwardTonAmount: ton("0.01"),
-                            forwardPayload: emptySlice()
-                    }.toCell()
-            });*/
             nativeSendMessage(
                 beginCell()
                     .storeInt(1, 2)                     // internal_message + ihd_disabled
