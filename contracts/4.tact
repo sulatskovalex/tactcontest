@@ -73,13 +73,15 @@ contract Task4 with Deployable {
     let sender: Address = sender();
     nativeThrowUnless(132, self.nftOwner == sender);
     if(now() < self.lockEndTime) {
-        send(SendParameters {
+/*        send(SendParameters {
             to: sender,
             value: 0,
             mode: SendRemainingValue,
             body: "NFT is still locked".asComment()
-        });
-/*        nativeSendMessage(
+        });*/
+        let builder: StringBuilder = beginString();
+        builder.append("NFT is still locked");
+        nativeSendMessage(
             beginCell()
                 .storeInt(1, 2)                     // internal_message + ihd_disabled
                 .storeBool(true)                    // bounce
@@ -90,7 +92,8 @@ contract Task4 with Deployable {
                 .storeBool(false)                   // code/data
                 .storeBool(true)                    // body
                 .storeRef(
-                    beginCell()
+                    builder.toCell()
+/*                    beginCell()
                     .storeUint(1607220500, 32)  //Transfer
                     .storeUint(queryId, 64)     //queryId
                     .storeAddress(owner)        //newOwner
@@ -98,10 +101,10 @@ contract Task4 with Deployable {
                     .storeBool(false)           //customPayload
                     .storeCoins(0)              //forwardAmount
                     .storeSlice(emptySlice())   //forwardPayload
-                    .endCell()
+                    .endCell()*/
                 ).endCell(),
             SendRemainingValue
-          );*/
+          );
         return;
     }
     nativeThrowUnless(132, self.nftAddress == msg.nftAddress);
