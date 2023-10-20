@@ -269,8 +269,8 @@ contract Task5 with Deployable {
                 .storeInt(1, 2)                         // internal_message + ihd_disabled
                 .storeBool(true)                        // bounce
                 .storeInt(0, 3)                         // bounced + from
-                .storeAddress(self.owner)                      // to
-                .storeCoins(0)                        // value
+                .storeAddress(myAddress)                // to
+                .storeCoins(0)                          // value
                 .storeInt(0, 1 + 4 + 4 + 64 + 32)       // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
                 .storeBool(false)                       // code/data
                 .storeBool(true)                        // body
