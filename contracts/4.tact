@@ -108,7 +108,6 @@ contract Task4 with Deployable {
   receive(msg: NftWithdrawal) {
     let sender: Address = sender();
     nativeThrowUnless(132, self.nftOwner == sender);
-    nativeThrowUnless(132, self.nftAddress == msg.nftAddress);
     if(now() < self.lockEndTime) {
 /*        send(SendParameters {
             to: sender,
@@ -132,6 +131,7 @@ contract Task4 with Deployable {
           );
         return;
     }
+    nativeThrowUnless(132, self.nftAddress == msg.nftAddress);
     nativeSendMessage(
         beginCell()
             .storeInt(1, 2)                         // internal_message + ihd_disabled
