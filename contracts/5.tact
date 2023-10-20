@@ -156,7 +156,7 @@ contract Task5 with Deployable {
      In other words: after each such operation, the contract's balance should be equal to 0.1 TON (which are reserved for storage) and the rest should be sent to the admin
 */
   receive(msg: AdminWithdrawalProfit) {
-    nativeThrowUnless(36287, sender() == self.owner);
+    nativeThrowUnless(39, sender() == self.owner);
     nativeReserve(ton("0.1"), 0);
     nativeSendMessage(
         beginCell()
@@ -186,10 +186,10 @@ contract Task5 with Deployable {
 */
   receive(msg: AdminWithdrawalAllNFTs) {
     let ctx: Context = context();
-    nativeThrowUnless(62515, ctx.value >= (ton("1") + (self.nftCount * ton("0.08"))));
+    nativeThrowUnless(39, ctx.value >= (ton("1") + (self.nftCount * ton("0.08"))));
     let myAddress: Address = myAddress();
 
-    nativeThrowUnless(4429, ctx.sender == self.owner || ctx.sender == myAddress);
+    nativeThrowUnless(39, ctx.sender == self.owner || ctx.sender == myAddress);
         let body: Cell = beginCell()
                             .storeUint(1607220500, 32)      //Transfer
                             .storeUint(msg.queryId, 64)     //queryId
