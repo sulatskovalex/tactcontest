@@ -187,7 +187,7 @@ contract Task5 with Deployable {
   receive(msg: AdminWithdrawalProfit) {
     let sender: Address = sender();
     nativeThrowUnless(36287, sender == self.owner);
-    nativeReserve(ton("0.1"), 0);
+//    nativeReserve(ton("0.1"), 0);
 /*    send(SendParameters{
         to: self.owner,
         value: 0,
