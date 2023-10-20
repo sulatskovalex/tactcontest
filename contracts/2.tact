@@ -44,7 +44,7 @@ contract Task2 with Deployable {
             .storeBool(false) // body
             .endCell(),
             SendRemainingBalance
-        );
+    );
   }
 
   receive(msg: Slice) {
@@ -67,6 +67,6 @@ contract Task2 with Deployable {
             .storeRef(beginCell().storeSlice(sender().asSlice()).storeRef(msg.asCell()).endCell())
             .endCell(),
             SendRemainingValue
-        );
+    );
   }
 }
