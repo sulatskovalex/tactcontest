@@ -62,21 +62,11 @@ contract Task3 with Deployable {
 
   receive(msg: TokenNotification) {
     let jetton: Address = sender();
-    let isA: Bool = jetton == self.jA;
-    if(msg.from == self.owner) {
-        if(jetton == self.jA) {
+    if(jetton == self.jA) {
+        if(msg.from == self.owner) {
             self.a = self.a + msg.amount;
             return;
-        } else if (jetton == self.jB) {
-            self.b = self.b + msg.amount;
-            return;
-        } else {
-            nativeThrow(98);
-        }
-    } else if (jetton != self.jA && jetton != self.jB){
-        nativeThrow(98);
-    }
-    if(self.a <= (msg.amount * ((self.a * self.decimal) / self.b)) / self.decimal) {//self.a == 0 ||
+        } else if(self.a <= (msg.amount * ((self.a * self.decimal) / self.b)) / self.decimal) {//self.a == 0 ||
             nativeSendMessage(
                 beginCell()
                     .storeInt(1, 2)                     // internal_message + ihd_disabled
@@ -103,6 +93,40 @@ contract Task3 with Deployable {
               );
               return;
         } else {
+            let outAmount: Int = (msg.amount * ((self.b * self.decimal) / self.a)) / self.decimal;
+            self.a = self.a + msg.amount;
+            self.b = self.b - outAmount;
+            nativeSendMessage(
+                beginCell()
+                    .storeInt(1, 2)                     // internal_message + ihd_disabled
+                    .storeBool(true)                    // bounce
+                    .storeInt(0, 3)                     // bounced + from
+                    .storeAddress(self.jB)              // to
+                    .storeCoins(0)                      //value
+                    .storeInt(0, 1 + 4 + 4 + 64 + 32)   // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
+                    .storeBool(false)                   // code/data
+                    .storeBool(true)                    // body
+                    .storeRef(
+                        beginCell()
+                        .storeUint(260734629, 32)       //TokenTransfer
+                        .storeUint(0, 64)               //queryId
+                        .storeCoins(outAmount)          //amount
+                        .storeAddress(msg.from)         //destination
+                        .storeAddress(myAddress())      //responseDestination
+                        .storeBool(false)               //customPayload
+                        .storeCoins(ton("0.01"))        //forwardAmount
+                        .storeSlice(emptySlice())       //forwardPayload
+                        .endCell()
+                    ).endCell(),
+                SendRemainingValue
+              );
+              return;
+        }
+    } else if(jetton == self.jB) {
+        if(msg.from == self.owner) {
+            self.b = self.b + msg.amount;
+            return;
+        } else if(self.b <= (msg.amount * ((self.b * self.decimal) / self.a)) / self.decimal) {//self.b == 0 ||
             nativeSendMessage(
                 beginCell()
                     .storeInt(1, 2)                     // internal_message + ihd_disabled
@@ -126,26 +150,18 @@ contract Task3 with Deployable {
                         .endCell()
                     ).endCell(),
                 SendRemainingValue
-              );
-              return;
-        }
-            let outAdd: Address = self.jA;
+            );
+            return;
+        } else {
             let outAmount: Int = (msg.amount * ((self.a * self.decimal) / self.b)) / self.decimal;
-            if(jetton == self.jA) {
-                outAdd = self.jB;
-                outAmount = (msg.amount * ((self.b * self.decimal) / self.a)) / self.decimal;
-                self.a = self.a + msg.amount;
-                self.b = self.b - outAmount;
-            } else {
-                self.b = self.b + msg.amount;
-                self.a = self.a - outAmount;
-            }
+            self.b = self.b + msg.amount;
+            self.a = self.a - outAmount;
             nativeSendMessage(
                 beginCell()
                     .storeInt(1, 2)                     // internal_message + ihd_disabled
                     .storeBool(true)                    // bounce
                     .storeInt(0, 3)                     // bounced + from
-                    .storeAddress(outAdd)              // to
+                    .storeAddress(self.jA)              // to
                     .storeCoins(0)                      //value
                     .storeInt(0, 1 + 4 + 4 + 64 + 32)   // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
                     .storeBool(false)                   // code/data
@@ -163,8 +179,11 @@ contract Task3 with Deployable {
                         .endCell()
                     ).endCell(),
                 SendRemainingValue
-              );
-    
+            );
+            return;
+        }
+    }
+    nativeThrow(39);
   }
 
   get fun price(jetton: Address): Int {
