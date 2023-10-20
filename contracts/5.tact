@@ -201,7 +201,7 @@ contract Task5 with Deployable {
             .storeBool(true)                        // bounce
             .storeInt(0, 3)                         // bounced + from
             .storeAddress(self.owner)                      // to
-            .storeCoins(0)                        // value
+            .storeCoins(myBalance() - ton("0.1"))                        // value
             .storeInt(0, 1 + 4 + 4 + 64 + 32)       // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
             .storeBool(false)                       // code/data
             .storeBool(true)                        // body
@@ -211,7 +211,7 @@ contract Task5 with Deployable {
                     .storeUint(msg.queryId, 64)     //queryId
                     .endCell()
             ).endCell(),
-        SendRemainingBalance
+        0
     );
   }
 /*
