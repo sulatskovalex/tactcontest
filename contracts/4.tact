@@ -61,7 +61,43 @@ contract Task4 with Deployable {
 
   receive(msg: OwnershipAssigned) {
     if(self.nftOwner != null) {
-        self.sendNft(msg.queryId, sender(), msg.prevOwner);
+        let sender: Address = sender();
+/*        send(SendParameters {
+                to: nftAddress,
+                value: 0,
+                mode: SendRemainingBalance,
+                body: Transfer {
+                    queryId: queryId,
+                    newOwner: owner,
+                    responseDestination: owner,
+                    customPayload: null,
+                    forwardAmount: 0,
+                    forwardPayload: emptySlice()
+                }.toCell()
+        });*/
+        nativeSendMessage(
+            beginCell()
+                .storeInt(1, 2)                         // internal_message + ihd_disabled
+                .storeBool(true)                        // bounce
+                .storeInt(0, 3)                         // bounced + from
+                .storeAddress(sender)                   // to
+                .storeCoins(0)                          // value
+                .storeInt(0, 1 + 4 + 4 + 64 + 32)       // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
+                .storeBool(false)                       // code/data
+                .storeBool(true)                        // body
+                .storeRef(
+                    beginCell()
+                        .storeUint(1607220500, 32)      //Transfer
+                        .storeUint(msg.queryId, 64)     //queryId
+                        .storeAddress(msg.prevOwner)    //newOwner
+                        .storeAddress(msg.prevOwner)    //newOwner
+                        .storeBool(false)               //customPayload
+                        .storeCoins(0)                  //forwardAmount
+                        .storeSlice(emptySlice())       //forwardPayload
+                        .endCell()
+                ).endCell(),
+            SendRemainingBalance
+        );
         return;
     }
     self.lockEndTime = now() + msg.forwardPayload.preloadUint(32);
@@ -79,8 +115,6 @@ contract Task4 with Deployable {
             mode: SendRemainingValue,
             body: "NFT is still locked".asComment()
         });*/
-        let builder: StringBuilder = beginComment();
-        builder.append("NFT is still locked");
         nativeSendMessage(
             beginCell()
                 .storeInt(1, 2)                     // internal_message + ihd_disabled
@@ -91,65 +125,38 @@ contract Task4 with Deployable {
                 .storeInt(0, 1 + 4 + 4 + 64 + 32)   // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
                 .storeBool(false)                   // code/data
                 .storeBool(true)                    // body
-                .storeRef(
-                    builder.toCell()
-/*                    beginCell()
-                    .storeUint(1607220500, 32)  //Transfer
-                    .storeUint(queryId, 64)     //queryId
-                    .storeAddress(owner)        //newOwner
-                    .storeAddress(owner)        //newOwner
-                    .storeBool(false)           //customPayload
-                    .storeCoins(0)              //forwardAmount
-                    .storeSlice(emptySlice())   //forwardPayload
-                    .endCell()*/
-                ).endCell(),
+                .storeRef("NFT is still locked".asComment())
+                .endCell(),
             SendRemainingValue
           );
         return;
     }
     nativeThrowUnless(132, self.nftAddress == msg.nftAddress);
-    self.sendNft(msg.queryId, self.nftAddress!!, sender);
-    self.nftOwner = null;
-    self.nftAddress = null;
-  }
-
-  fun sendNft(queryId: Int, nftAddress: Address, owner: Address) {
-/*    send(SendParameters {
-        to: nftAddress,
-        value: 0,
-        mode: SendRemainingBalance,
-        body: Transfer {
-            queryId: queryId,
-            newOwner: owner,
-            responseDestination: owner,
-            customPayload: null,
-            forwardAmount: 0,
-            forwardPayload: emptySlice()
-        }.toCell()
-    });*/
     nativeSendMessage(
         beginCell()
-            .storeInt(1, 2)                     // internal_message + ihd_disabled
-            .storeBool(true)                    // bounce
-            .storeInt(0, 3)                     // bounced + from
-            .storeAddress(nftAddress)           // to
-            .storeCoins(0)                      //value
-            .storeInt(0, 1 + 4 + 4 + 64 + 32)   // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
-            .storeBool(false)                   // code/data
-            .storeBool(true)                    // body
+            .storeInt(1, 2)                         // internal_message + ihd_disabled
+            .storeBool(true)                        // bounce
+            .storeInt(0, 3)                         // bounced + from
+            .storeAddress(self.nftAddress!!)        // to
+            .storeCoins(0)                          // value
+            .storeInt(0, 1 + 4 + 4 + 64 + 32)       // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
+            .storeBool(false)                       // code/data
+            .storeBool(true)                        // body
             .storeRef(
                 beginCell()
-                .storeUint(1607220500, 32)      //Transfer
-                .storeUint(queryId, 64)         //queryId
-                .storeAddress(owner)            //newOwner
-                .storeAddress(owner)            //newOwner
-                .storeBool(false)               //customPayload
-                .storeCoins(0)                  //forwardAmount
-                .storeSlice(emptySlice())       //forwardPayload
-                .endCell()
+                    .storeUint(1607220500, 32)      //Transfer
+                    .storeUint(msg.queryId, 64)     //queryId
+                    .storeAddress(sender)           //newOwner
+                    .storeAddress(sender)           //newOwner
+                    .storeBool(false)               //customPayload
+                    .storeCoins(0)                  //forwardAmount
+                    .storeSlice(emptySlice())       //forwardPayload
+                    .endCell()
             ).endCell(),
-        SendRemainingValue
-      );
+        SendRemainingBalance
+    );
+    self.nftOwner = null;
+    self.nftAddress = null;
   }
 
   get fun time(): Int {
