@@ -1,7 +1,7 @@
 import "@stdlib/deploy";
 
 /*
-  TASK 2 - Proxy 
+  TASK 2 - Proxy
   Create a contract that forwards all received TONs
   to the admin contract (whose address is set in init_store).
   Message from this proxy contract to the admin contract should contain:
@@ -24,7 +24,7 @@ contract Task2 with Deployable {
   init(admin: Address) {
     self.admin = admin;
   }
-  
+
   receive(msg: Refund) {
     nativeThrowUnless(39, sender() == self.admin);
     nativeSendMessage(
