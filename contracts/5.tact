@@ -85,8 +85,8 @@ contract Task5 with Deployable {
      In other words: the contract's balance should increase by exactly 2 TON, some incoming TONs will be consumed for gas and the remainings of the incoming TONs should be refunded to the sender
 */
   receive(msg: OwnershipAssigned) {
-    self.nftMap.set(self.nftCount, sender());
     if(self.owner == msg.prevOwner) {
+        self.nftMap.set(self.nftCount, sender());
         self.nftCount = self.nftCount + 1;
         return;
     }
@@ -95,65 +95,38 @@ contract Task5 with Deployable {
         return;
     }
     if(ctx.value < ton("2.1") || self.nftCount == 0) {
-/*        send(SendParameters{
-            to: ctx.sender,
-            value: 0,
-            mode: SendRemainingValue,
-            bounce: true,
-            body: Transfer {
-                    queryId: msg.queryId,
-                    newOwner: msg.prevOwner,
-                    responseDestination: msg.prevOwner,
-                    customPayload: null,
-                    forwardAmount: 0,
-                    forwardPayload: emptySlice()
-                }.toCell()
-        });*/
-    nativeSendMessage(
-        beginCell()
-            .storeInt(1, 2)                         // internal_message + ihd_disabled
-            .storeBool(true)                        // bounce
-            .storeInt(0, 3)                         // bounced + from
-            .storeAddress(ctx.sender)               // to
-            .storeCoins(0)                          // value
-            .storeInt(0, 1 + 4 + 4 + 64 + 32)       // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
-            .storeBool(false)                       // code/data
-            .storeBool(true)                        // body
-            .storeRef(
-                beginCell()
-                    .storeUint(1607220500, 32)      //Transfer
-                    .storeUint(msg.queryId, 64)     //queryId
-                    .storeAddress(msg.prevOwner)    //newOwner
-                    .storeAddress(msg.prevOwner)    //newOwner
-                    .storeBool(false)               //customPayload
-                    .storeCoins(0)                  //forwardAmount
-                    .storeSlice(emptySlice())       //forwardPayload
-                    .endCell()
-            ).endCell(),
-        SendRemainingValue
-    );
+        nativeSendMessage(
+            beginCell()
+                .storeInt(1, 2)                         // internal_message + ihd_disabled
+                .storeBool(true)                        // bounce
+                .storeInt(0, 3)                         // bounced + from
+                .storeAddress(ctx.sender)               // to
+                .storeCoins(0)                          // value
+                .storeInt(0, 1 + 4 + 4 + 64 + 32)       // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
+                .storeBool(false)                       // code/data
+                .storeBool(true)                        // body
+            .   storeRef(
+                    beginCell()
+                        .storeUint(1607220500, 32)      //Transfer
+                        .storeUint(msg.queryId, 64)     //queryId
+                        .storeAddress(msg.prevOwner)    //newOwner
+                        .storeAddress(msg.prevOwner)    //newOwner
+                        .storeBool(false)               //customPayload
+                        .storeCoins(0)                  //forwardAmount
+                        .storeSlice(emptySlice())       //forwardPayload
+                        .endCell()
+                ).endCell(),
+            SendRemainingValue
+        );
         return;
     }
+//    self.nftMap.set(self.nftCount, ctx.sender);
     let nftIndex: Int = nativeRandomInterval(self.nftCount);
-    //random(0, self.nftCount);
     let nft: Address = self.nftMap.get(nftIndex)!!;
     self.nftMap.set(nftIndex, ctx.sender);
-    self.nftMap.set(self.nftCount, null);
+//    self.nftMap.set(self.nftCount, null);
     let fee: Int = ctx.value - ton("2");
     nativeReserve(myBalance() - ctx.value + ton("2"), 0);
-/*    send(SendParameters{
-        to: nft,
-        value: fee,
-        mode: SendRemainingBalance,
-        body: Transfer {
-            queryId: msg.queryId,
-            newOwner: msg.prevOwner,
-            responseDestination: msg.prevOwner,
-            customPayload: null,
-            forwardAmount: 0,
-            forwardPayload: emptySlice()
-        }.toCell()
-    });*/
     nativeSendMessage(
         beginCell()
             .storeInt(1, 2)                         // internal_message + ihd_disabled
@@ -187,13 +160,6 @@ contract Task5 with Deployable {
   receive(msg: AdminWithdrawalProfit) {
     nativeThrowUnless(36287, sender() == self.owner);
     nativeReserve(ton("0.1"), 0);
-/*    send(SendParameters{
-        to: self.owner,
-        value: 0,
-        mode: SendRemainingBalance,
-        bounce: true,
-        body: AdminFetchProfit{ queryId: msg.queryId }.toCell()
-    });*/
     nativeSendMessage(
         beginCell()
             .storeInt(1, 2)                         // internal_message + ihd_disabled
@@ -225,14 +191,6 @@ contract Task5 with Deployable {
     nativeThrowUnless(62515, ctx.value >= (ton("1") + (self.nftCount * ton("0.08"))));
     let myAddress: Address = myAddress();
     nativeThrowUnless(4429, ctx.sender == self.owner || ctx.sender == myAddress);
-/*    let body: Cell = Transfer {
-            queryId: msg.queryId,
-            newOwner: self.owner,
-            responseDestination: self.owner,
-            customPayload: null,
-            forwardAmount: 0,
-            forwardPayload: emptySlice()
-        }.toCell();*/
         let body: Cell = beginCell()
                             .storeUint(1607220500, 32)      //Transfer
                             .storeUint(msg.queryId, 64)     //queryId
@@ -244,7 +202,6 @@ contract Task5 with Deployable {
                             .endCell();
     repeat(min(self.nftCount, 100)) {
         self.nftCount = self.nftCount - 1;
-//        send(SendParameters{ to: self.nftMap.get(self.nftCount)!!, value: ton("0.02"), body: body });
         nativeSendMessage(
             beginCell()
                 .storeInt(1, 2)                                 // internal_message + ihd_disabled
@@ -261,7 +218,6 @@ contract Task5 with Deployable {
         );
     }
     if(self.nftCount > 0) {
-//        send(SendParameters{ to: myAddress, value: 0, mode: SendRemainingBalance, body: msg.toCell() });
         nativeSendMessage(
             beginCell()
                 .storeInt(1, 2)                         // internal_message + ihd_disabled
